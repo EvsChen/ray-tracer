@@ -6,24 +6,51 @@
 !_TAG_PROGRAM_VERSION	5.8	//
 A	ray.h	/^        vec3 A;$/;"	m	class:ray
 B	ray.h	/^        vec3 B;$/;"	m	class:ray
+CAMERAH	camera.h	/^#define CAMERAH$/;"	d
 HITABLEH	hitable.h	/^#define HITABLEH$/;"	d
+HITABLELISTH	hitable_list.h	/^#define HITABLELISTH$/;"	d
+MATERIALH	material.h	/^#define MATERIALH$/;"	d
 RAYH	ray.h	/^#define RAYH$/;"	d
 SPHEREH	sphere.h	/^#define SPHEREH$/;"	d
+albedo	material.h	/^        vec3 albedo;$/;"	m	class:lambertian
+albedo	material.h	/^        vec3 albedo;$/;"	m	class:metal
 b	vec3.h	/^    inline float b() const { return e[2]; }$/;"	f	class:vec3
+camera	camera.h	/^        camera(vec3 lookfrom, vec3 lookat, vec3 vup,$/;"	f	class:camera
+camera	camera.h	/^class camera {$/;"	c
 center	sphere.h	/^        vec3 center;$/;"	m	class:sphere
-color	main.cpp	/^vec3 color(const ray& r) {$/;"	f
+color	main.cpp	/^vec3 color(const ray& r, hitable *world, int depth) {$/;"	f
 cross	vec3.h	/^inline vec3 cross(const vec3 &v1, const vec3 &v2) {$/;"	f
+dielectric	material.h	/^        dielectric(float ri) : ref_idx(ri) {}$/;"	f	class:dielectric
+dielectric	material.h	/^class dielectric : public material {$/;"	c
 direction	ray.h	/^        vec3 direction() const { return B; }$/;"	f	class:ray
 dot	vec3.h	/^inline float dot(const vec3 &v1, const vec3 &v2) {$/;"	f
 e	vec3.h	/^    float e[3];$/;"	m	class:vec3
+fuzz	material.h	/^        float fuzz;$/;"	m	class:metal
 g	vec3.h	/^    inline float g() const { return e[1]; }$/;"	f	class:vec3
+get_ray	camera.h	/^        ray get_ray(float s, float t) {$/;"	f	class:camera
+hit	hitable_list.h	/^bool hitable_list::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:hitable_list
 hit	sphere.h	/^bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:sphere
 hit_record	hitable.h	/^struct hit_record {$/;"	s
-hit_sphere	main.cpp	/^float hit_sphere(const vec3& center, float radius, const ray& r) {$/;"	f
 hitable	hitable.h	/^class hitable {$/;"	c
+hitable_list	hitable_list.h	/^        hitable_list() {}$/;"	f	class:hitable_list
+hitable_list	hitable_list.h	/^        hitable_list(hitable **l, int n) { list = l; list_size = n; }$/;"	f	class:hitable_list
+hitable_list	hitable_list.h	/^class hitable_list: public hitable {$/;"	c
+horizontal	camera.h	/^        vec3 horizontal;$/;"	m	class:camera
+lambertian	material.h	/^        lambertian(const vec3& a) : albedo(a) {}$/;"	f	class:lambertian
+lambertian	material.h	/^class lambertian : public material {$/;"	c
 length	vec3.h	/^    inline float length() const {$/;"	f	class:vec3
+lens_radius	camera.h	/^        float lens_radius;$/;"	m	class:camera
+list	hitable_list.h	/^        hitable **list;$/;"	m	class:hitable_list
+list_size	hitable_list.h	/^        int list_size;$/;"	m	class:hitable_list
+lower_left_corner	camera.h	/^        vec3 lower_left_corner;$/;"	m	class:camera
 main	main.cpp	/^int main() {$/;"	f
 make_unit_vector	vec3.h	/^inline void vec3::make_unit_vector() {$/;"	f	class:vec3
+mat_ptr	hitable.h	/^    material *mat_ptr;$/;"	m	struct:hit_record
+mat_ptr	sphere.h	/^        material* mat_ptr;$/;"	m	class:sphere
+material	material.h	/^class material {$/;"	c
+metal	material.h	/^        metal(const vec3& a) : albedo(a), fuzz(1) {}$/;"	f	class:metal
+metal	material.h	/^        metal(const vec3& a, float f) : albedo(a) {$/;"	f	class:metal
+metal	material.h	/^class metal : public material {$/;"	c
 normal	hitable.h	/^    vec3 normal;$/;"	m	struct:hit_record
 operator *	vec3.h	/^inline vec3 operator*(const vec3 &v, float t) {$/;"	f
 operator *	vec3.h	/^inline vec3 operator*(const vec3 &v1, const vec3 &v2) {$/;"	f
@@ -33,7 +60,7 @@ operator *=	vec3.h	/^inline vec3& vec3::operator*=(const vec3 &v) {$/;"	f	class:
 operator +	vec3.h	/^    inline const vec3& operator+() const { return *this; }$/;"	f	class:vec3
 operator +	vec3.h	/^inline vec3 operator+(const vec3 &v1, const vec3 &v2) {$/;"	f
 operator +=	vec3.h	/^inline vec3& vec3::operator+=(const vec3 &v) {$/;"	f	class:vec3
-operator -	vec3.h	/^    inline vec3 operator-() { return vec3(-e[0], -e[1], -e[2]); }$/;"	f	class:vec3
+operator -	vec3.h	/^    inline vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }$/;"	f	class:vec3
 operator -	vec3.h	/^inline vec3 operator-(const vec3 &v1, const vec3 &v2) {$/;"	f
 operator -=	vec3.h	/^inline vec3& vec3::operator-=(const vec3 &v) {$/;"	f	class:vec3
 operator /	vec3.h	/^inline vec3 operator\/(const vec3 &v1, const vec3 &v2) {$/;"	f
@@ -44,23 +71,38 @@ operator <<	vec3.h	/^inline std::ostream& operator<<(std::ostream &os, const vec
 operator >>	vec3.h	/^inline std::istream& operator>>(std::istream &is, vec3 &t) {$/;"	f
 operator []	vec3.h	/^    inline float operator[](int i) const { return e[i]; }$/;"	f	class:vec3
 operator []	vec3.h	/^    inline float& operator[](int i) { return e[i]; }$/;"	f	class:vec3
+origin	camera.h	/^        vec3 origin;$/;"	m	class:camera
 origin	ray.h	/^        vec3 origin() const { return A; }$/;"	f	class:ray
 p	hitable.h	/^    vec3 p;$/;"	m	struct:hit_record
 point_at_parameter	ray.h	/^        vec3 point_at_parameter(float t) const { return A + t * B; }$/;"	f	class:ray
 r	vec3.h	/^    inline float r() const { return e[0]; }$/;"	f	class:vec3
 radius	sphere.h	/^        float radius;$/;"	m	class:sphere
+random_in_unit_disk	camera.h	/^vec3 random_in_unit_disk() {$/;"	f
+random_in_unit_sphere	material.h	/^vec3 random_in_unit_sphere() {$/;"	f
+random_scene	main.cpp	/^hitable *random_scene() {$/;"	f
 ray	ray.h	/^        ray() {}$/;"	f	class:ray
 ray	ray.h	/^        ray(const vec3& a, const vec3& b) { A = a; B = b; }$/;"	f	class:ray
 ray	ray.h	/^class ray {$/;"	c
+ref_idx	material.h	/^        float ref_idx;$/;"	m	class:dielectric
+reflect	material.h	/^vec3 reflect(const vec3& v, const vec3& n) {$/;"	f
+refract	material.h	/^bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {$/;"	f
+scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:dielectric
+scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:lambertian
+scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:metal
+schlick	material.h	/^float schlick(float cosine, float ref_idx) {$/;"	f
 sphere	sphere.h	/^        sphere() {}$/;"	f	class:sphere
-sphere	sphere.h	/^        sphere(vec3 cen, float r) : center(cen), radius(r) {};$/;"	f	class:sphere
+sphere	sphere.h	/^        sphere(vec3 cen, float r, material *mat) : center(cen), radius(r), mat_ptr(mat) {};$/;"	f	class:sphere
 sphere	sphere.h	/^class sphere : public hitable {$/;"	c
 squared_length	vec3.h	/^    inline float squared_length() const {$/;"	f	class:vec3
 t	hitable.h	/^    float t;$/;"	m	struct:hit_record
+u	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 unit_vector	vec3.h	/^inline vec3 unit_vector(vec3 v) {$/;"	f
+v	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 vec3	vec3.h	/^    vec3() {}$/;"	f	class:vec3
 vec3	vec3.h	/^    vec3(float e0, float e1, float e2) { e[0] = e0; e[1] = e1; e[2] = e2; }$/;"	f	class:vec3
 vec3	vec3.h	/^class vec3  {$/;"	c
+vertical	camera.h	/^        vec3 vertical;$/;"	m	class:camera
+w	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 x	vec3.h	/^    inline float x() const { return e[0]; }$/;"	f	class:vec3
 y	vec3.h	/^    inline float y() const { return e[1]; }$/;"	f	class:vec3
 z	vec3.h	/^    inline float z() const { return e[2]; }$/;"	f	class:vec3
