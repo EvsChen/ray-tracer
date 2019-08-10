@@ -12,9 +12,11 @@ CAMERAH	camera.h	/^#define CAMERAH$/;"	d
 HITABLEH	hitable.h	/^#define HITABLEH$/;"	d
 HITABLELISTH	hitable_list.h	/^#define HITABLELISTH$/;"	d
 MATERIALH	material.h	/^#define MATERIALH$/;"	d
+PERLINH	perlin.h	/^#define PERLINH$/;"	d
 RAYH	ray.h	/^#define RAYH$/;"	d
 SPHEREH	sphere.h	/^#define SPHEREH$/;"	d
 TEXTUREH	texture.h	/^#define TEXTUREH$/;"	d
+VEC3H	vec3.h	/^#define VEC3H$/;"	d
 _max	aabb.h	/^        vec3 _min, _max;$/;"	m	class:aabb
 _min	aabb.h	/^        vec3 _min, _max;$/;"	m	class:aabb
 _time	ray.h	/^        float _time;$/;"	m	class:ray
@@ -94,6 +96,11 @@ min	aabb.h	/^        vec3 min() const { return _min; }$/;"	f	class:aabb
 moving_sphere	sphere.h	/^        moving_sphere() {}$/;"	f	class:moving_sphere
 moving_sphere	sphere.h	/^        moving_sphere(vec3 cen0, vec3 cen1, float t0, float t1, float r, material *m)$/;"	f	class:moving_sphere
 moving_sphere	sphere.h	/^class moving_sphere: public hitable {$/;"	c
+noise	perlin.h	/^        float noise(const vec3& p) const {$/;"	f	class:perlin
+noise	texture.h	/^        perlin noise;$/;"	m	class:noise_texture
+noise_texture	texture.h	/^        noise_texture() {}$/;"	f	class:noise_texture
+noise_texture	texture.h	/^        noise_texture(float sc) : scale(sc) {}$/;"	f	class:noise_texture
+noise_texture	texture.h	/^class noise_texture : public texture {$/;"	c
 normal	hitable.h	/^    vec3 normal;$/;"	m	struct:hit_record
 odd	texture.h	/^        texture *odd;$/;"	m	class:checker_texture
 operator *	vec3.h	/^inline vec3 operator*(const vec3 &v, float t) {$/;"	f
@@ -118,6 +125,16 @@ operator []	vec3.h	/^    inline float& operator[](int i) { return e[i]; }$/;"	f	
 origin	camera.h	/^        vec3 origin;$/;"	m	class:camera
 origin	ray.h	/^        vec3 origin() const { return A; }$/;"	f	class:ray
 p	hitable.h	/^    vec3 p;$/;"	m	struct:hit_record
+perlin	perlin.h	/^class perlin {$/;"	c
+perlin_generate	perlin.h	/^static float* perlin_generate() {$/;"	f
+perlin_generate_perm	perlin.h	/^static int* perlin_generate_perm() {$/;"	f
+perm_x	perlin.h	/^        static int *perm_x;$/;"	m	class:perlin
+perm_x	perlin.h	/^int *perlin::perm_x = perlin_generate_perm();$/;"	m	class:perlin
+perm_y	perlin.h	/^        static int *perm_y;$/;"	m	class:perlin
+perm_y	perlin.h	/^int *perlin::perm_y = perlin_generate_perm();$/;"	m	class:perlin
+perm_z	perlin.h	/^        static int *perm_z;$/;"	m	class:perlin
+perm_z	perlin.h	/^int *perlin::perm_z = perlin_generate_perm();$/;"	m	class:perlin
+permute	perlin.h	/^void permute(int *p, int n) {$/;"	f
 point_at_parameter	ray.h	/^        vec3 point_at_parameter(float t) const { return A + t * B; }$/;"	f	class:ray
 r	vec3.h	/^    inline float r() const { return e[0]; }$/;"	f	class:vec3
 radius	sphere.h	/^        float radius;$/;"	m	class:moving_sphere
@@ -125,6 +142,8 @@ radius	sphere.h	/^        float radius;$/;"	m	class:sphere
 random_in_unit_disk	camera.h	/^vec3 random_in_unit_disk() {$/;"	f
 random_in_unit_sphere	material.h	/^vec3 random_in_unit_sphere() {$/;"	f
 random_scene	main.cpp	/^hitable *random_scene() {$/;"	f
+ranfloat	perlin.h	/^        static float *ranfloat;$/;"	m	class:perlin
+ranfloat	perlin.h	/^float *perlin::ranfloat = perlin_generate();$/;"	m	class:perlin
 ray	ray.h	/^        ray() {}$/;"	f	class:ray
 ray	ray.h	/^        ray(const vec3& a, const vec3& b, float ti = 0.0) : A(a), B(b), _time(ti) {}$/;"	f	class:ray
 ray	ray.h	/^class ray {$/;"	c
@@ -132,6 +151,7 @@ ref_idx	material.h	/^        float ref_idx;$/;"	m	class:dielectric
 reflect	material.h	/^vec3 reflect(const vec3& v, const vec3& n) {$/;"	f
 refract	material.h	/^bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {$/;"	f
 right	bvh_node.h	/^        hitable *right;$/;"	m	class:bvh_node
+scale	texture.h	/^        float scale;$/;"	m	class:noise_texture
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:dielectric
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:lambertian
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:metal
@@ -148,11 +168,14 @@ time0	camera.h	/^        float time0, time1; \/\/ shutter open\/close time$/;"	m
 time0	sphere.h	/^        float time0, time1;$/;"	m	class:moving_sphere
 time1	camera.h	/^        float time0, time1; \/\/ shutter open\/close time$/;"	m	class:camera
 time1	sphere.h	/^        float time0, time1;$/;"	m	class:moving_sphere
+trilinear_interp	perlin.h	/^inline float trilinear_interp(float c[2][2][2], float u, float v, float w) {$/;"	f
+two_perlin_spheres	main.cpp	/^hitable *two_perlin_spheres() {$/;"	f
 u	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 unit_vector	vec3.h	/^inline vec3 unit_vector(vec3 v) {$/;"	f
 v	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 value	texture.h	/^        virtual vec3 value(float u, float v, const vec3& p)  const {$/;"	f	class:checker_texture
 value	texture.h	/^        virtual vec3 value(float u, float v, const vec3& p) const {$/;"	f	class:constant_texture
+value	texture.h	/^        virtual vec3 value(float u, float v, const vec3& p) const {$/;"	f	class:noise_texture
 vec3	vec3.h	/^    vec3() {}$/;"	f	class:vec3
 vec3	vec3.h	/^    vec3(float e0, float e1, float e2) { e[0] = e0; e[1] = e1; e[2] = e2; }$/;"	f	class:vec3
 vec3	vec3.h	/^class vec3  {$/;"	c
