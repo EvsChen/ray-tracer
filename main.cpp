@@ -6,6 +6,9 @@
 #include "material.h"
 #include "texture.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 vec3 color(const ray& r, hitable *world, int depth) {
     hit_record rec;
     // 0.001 for avoiding t close to 0
@@ -13,7 +16,8 @@ vec3 color(const ray& r, hitable *world, int depth) {
         ray scattered;
         vec3 attenuation;
         if (depth < 50 && rec.mat_ptr -> scatter(r, rec, attenuation, scattered)) {
-            return attenuation * color(scattered, world, depth + 1);
+            return attenuation;
+            // return attenuation * color(scattered, world, depth + 1);
         }
         else {
             return vec3(0, 0, 0) ;
@@ -33,6 +37,15 @@ hitable *two_perlin_spheres() {
     list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
     return new hitable_list(list, 2);
 }
+
+hitable *earth() {
+    int nx, ny, nn;
+    //unsigned char *tex_data = stbi_load("tiled.jpg", &nx, &ny, &nn, 0);
+    unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+    material *mat =  new lambertian(new image_texture(tex_data, nx, ny));
+    return new sphere(vec3(0,0, 0), 2, mat);
+}
+
 
 hitable *random_scene() {
     int n = 200;
@@ -82,7 +95,8 @@ int main() {
     int ns = 10;
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     // hitable *world = random_scene();
-    hitable *world = two_perlin_spheres();
+    // hitable *world = two_perlin_spheres();
+    hitable *world = earth();
     vec3 lookfrom(13, 2, 3);
     vec3 lookat(0, 0, 0);
     float dist_to_focus = 10.0;
