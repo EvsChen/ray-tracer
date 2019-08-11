@@ -27,7 +27,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
 }
 
 hitable *two_perlin_spheres() {
-    texture *pertext = new noise_texture(2);
+    texture *pertext = new noise_texture(4);
     hitable **list = new hitable*[2];
     list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pertext));
     list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
@@ -86,7 +86,7 @@ int main() {
     vec3 lookfrom(13, 2, 3);
     vec3 lookat(0, 0, 0);
     float dist_to_focus = 10.0;
-    float aperture = 0.1;
+    float aperture = 0.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20,
                float(nx)/float(ny), aperture, dist_to_focus,
                0.0, 1.0);

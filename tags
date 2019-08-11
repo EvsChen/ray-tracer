@@ -126,8 +126,9 @@ origin	camera.h	/^        vec3 origin;$/;"	m	class:camera
 origin	ray.h	/^        vec3 origin() const { return A; }$/;"	f	class:ray
 p	hitable.h	/^    vec3 p;$/;"	m	struct:hit_record
 perlin	perlin.h	/^class perlin {$/;"	c
-perlin_generate	perlin.h	/^static float* perlin_generate() {$/;"	f
+perlin_generate	perlin.h	/^static vec3* perlin_generate() {$/;"	f
 perlin_generate_perm	perlin.h	/^static int* perlin_generate_perm() {$/;"	f
+perline_interp	perlin.h	/^inline float perline_interp(vec3 c[2][2][2], float u, float v, float w) {$/;"	f
 perm_x	perlin.h	/^        static int *perm_x;$/;"	m	class:perlin
 perm_x	perlin.h	/^int *perlin::perm_x = perlin_generate_perm();$/;"	m	class:perlin
 perm_y	perlin.h	/^        static int *perm_y;$/;"	m	class:perlin
@@ -142,8 +143,8 @@ radius	sphere.h	/^        float radius;$/;"	m	class:sphere
 random_in_unit_disk	camera.h	/^vec3 random_in_unit_disk() {$/;"	f
 random_in_unit_sphere	material.h	/^vec3 random_in_unit_sphere() {$/;"	f
 random_scene	main.cpp	/^hitable *random_scene() {$/;"	f
-ranfloat	perlin.h	/^        static float *ranfloat;$/;"	m	class:perlin
-ranfloat	perlin.h	/^float *perlin::ranfloat = perlin_generate();$/;"	m	class:perlin
+ranvec	perlin.h	/^        static vec3 *ranvec;$/;"	m	class:perlin
+ranvec	perlin.h	/^vec3 *perlin::ranvec = perlin_generate();$/;"	m	class:perlin
 ray	ray.h	/^        ray() {}$/;"	f	class:ray
 ray	ray.h	/^        ray(const vec3& a, const vec3& b, float ti = 0.0) : A(a), B(b), _time(ti) {}$/;"	f	class:ray
 ray	ray.h	/^class ray {$/;"	c
@@ -168,7 +169,6 @@ time0	camera.h	/^        float time0, time1; \/\/ shutter open\/close time$/;"	m
 time0	sphere.h	/^        float time0, time1;$/;"	m	class:moving_sphere
 time1	camera.h	/^        float time0, time1; \/\/ shutter open\/close time$/;"	m	class:camera
 time1	sphere.h	/^        float time0, time1;$/;"	m	class:moving_sphere
-trilinear_interp	perlin.h	/^inline float trilinear_interp(float c[2][2][2], float u, float v, float w) {$/;"	f
 two_perlin_spheres	main.cpp	/^hitable *two_perlin_spheres() {$/;"	f
 u	camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 unit_vector	vec3.h	/^inline vec3 unit_vector(vec3 v) {$/;"	f
