@@ -41,7 +41,8 @@ hitable *two_perlin_spheres() {
 hitable *earth() {
     int nx, ny, nn;
     //unsigned char *tex_data = stbi_load("tiled.jpg", &nx, &ny, &nn, 0);
-    unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+    // unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+    unsigned char *tex_data = stbi_load("earthmap2.png", &nx, &ny, &nn, 0);
     material *mat =  new lambertian(new image_texture(tex_data, nx, ny));
     return new sphere(vec3(0,0, 0), 2, mat);
 }
