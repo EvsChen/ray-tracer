@@ -121,7 +121,7 @@ int main() {
     int nx = 800;
     int ny = 800;
     // number of samples
-    int ns = 10;
+    int ns = 100;
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     // hitable *world = random_scene();
     // hitable *world = two_perlin_spheres();
