@@ -7,6 +7,7 @@
 A	ray.h	/^        vec3 A;$/;"	m	class:ray
 AABBH	aabb.h	/^#define AABBH$/;"	d
 B	ray.h	/^        vec3 B;$/;"	m	class:ray
+BOXH	box.h	/^#define BOXH$/;"	d
 BVHNODEH	bvh_node.h	/^#define BVHNODEH$/;"	d
 CAMERAH	camera.h	/^#define CAMERAH$/;"	d
 CASE	stb_image.h	/^         #define CASE(/;"	d
@@ -18,6 +19,7 @@ FAST_BITS	stb_image.h	/^#define FAST_BITS /;"	d
 HITABLEH	hitable.h	/^#define HITABLEH$/;"	d
 HITABLELISTH	hitable_list.h	/^#define HITABLELISTH$/;"	d
 MATERIALH	material.h	/^#define MATERIALH$/;"	d
+MEDIUMH	medium.h	/^#define MEDIUMH$/;"	d
 PERLINH	perlin.h	/^#define PERLINH$/;"	d
 RAYH	ray.h	/^#define RAYH$/;"	d
 RECTH	rect.h	/^#define RECTH$/;"	d
@@ -81,14 +83,27 @@ aabb	aabb.h	/^        aabb() {}$/;"	f	class:aabb
 aabb	aabb.h	/^        aabb(const vec3& a, const vec3& b) { _min = a; _max = b; }$/;"	f	class:aabb
 aabb	aabb.h	/^class aabb {$/;"	c
 albedo	material.h	/^        texture *albedo;$/;"	m	class:lambertian
+albedo	material.h	/^        texture* albedo;$/;"	m	class:isotropic
 albedo	material.h	/^        vec3 albedo;$/;"	m	class:metal
 b	vec3.h	/^    inline float b() const { return e[2]; }$/;"	f	class:vec3
+bbox	hitable.h	/^        aabb bbox;$/;"	m	class:rotate_y
 bgindex	stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
+boundary	medium.h	/^        hitable *boundary;$/;"	m	class:constant_medium
+bounding_box	box.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:box
 bounding_box	bvh_node.h	/^bool bvh_node::bounding_box(float t0, float t1, aabb& b) const {$/;"	f	class:bvh_node
+bounding_box	hitable.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:flip_normals
+bounding_box	hitable.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:rotate_y
+bounding_box	hitable.h	/^bool translate::bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:translate
 bounding_box	hitable_list.h	/^bool hitable_list::bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:hitable_list
+bounding_box	medium.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:constant_medium
 bounding_box	rect.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:xy_rect
+bounding_box	rect.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:xz_rect
+bounding_box	rect.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:yz_rect
 bounding_box	sphere.h	/^bool moving_sphere::bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:moving_sphere
 bounding_box	sphere.h	/^bool sphere::bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:sphere
+box	box.h	/^        box() {}$/;"	f	class:box
+box	box.h	/^box::box(const vec3& p0, const vec3& p1, material *ptr) {$/;"	f	class:box
+box	box.h	/^class box : public hitable {$/;"	c
 box	bvh_node.h	/^        aabb box;$/;"	m	class:bvh_node
 box_x_compare	bvh_node.h	/^int box_x_compare(const void * a, const void * b) {$/;"	f
 box_y_compare	bvh_node.h	/^int box_y_compare(const void * a, const void * b) {$/;"	f
@@ -119,9 +134,14 @@ coeff_w	stb_image.h	/^      int      coeff_w, coeff_h; \/\/ number of 8x8 coeffi
 color	main.cpp	/^vec3 color(const ray& r, hitable *world, int depth) {$/;"	f
 color	texture.h	/^        vec3 color;$/;"	m	class:constant_texture
 color_table	stb_image.h	/^   stbi_uc *color_table;$/;"	m	struct:__anon16
+constant_medium	medium.h	/^        constant_medium(hitable *b, float d, texture *a)$/;"	f	class:constant_medium
+constant_medium	medium.h	/^class constant_medium : public hitable {$/;"	c
 constant_texture	texture.h	/^        constant_texture() {}$/;"	f	class:constant_texture
 constant_texture	texture.h	/^        constant_texture(vec3 c) : color(c) {}$/;"	f	class:constant_texture
 constant_texture	texture.h	/^class constant_texture : public texture {$/;"	c
+cornell_box	main.cpp	/^hitable *cornell_box() {$/;"	f
+cornell_smoke	main.cpp	/^hitable *cornell_smoke() {$/;"	f
+cos_theta	hitable.h	/^        float cos_theta;$/;"	m	class:rotate_y
 cross	vec3.h	/^inline vec3 cross(const vec3 &v1, const vec3 &v2) {$/;"	f
 cur_x	stb_image.h	/^   int cur_x, cur_y;$/;"	m	struct:__anon16
 cur_y	stb_image.h	/^   int cur_x, cur_y;$/;"	m	struct:__anon16
@@ -168,6 +188,7 @@ dct_wsub	stb_image.h	/^   #define dct_wsub(/;"	d
 dct_wsub	stb_image.h	/^#define dct_wsub(/;"	d
 dct_wsub	stb_image.h	/^#undef dct_wsub$/;"	d
 delta	stb_image.h	/^   int    delta[17];   \/\/ old 'firstsymbol' - old 'firstcode'$/;"	m	struct:__anon5
+density	medium.h	/^        float density;$/;"	m	class:constant_medium
 dequant	stb_image.h	/^   stbi_uc dequant[4][64];$/;"	m	struct:__anon6
 dielectric	material.h	/^        dielectric(float ri) : ref_idx(ri) {}$/;"	f	class:dielectric
 dielectric	material.h	/^class dielectric : public material {$/;"	c
@@ -190,11 +211,14 @@ fast	stb_image.h	/^   stbi_uc  fast[1 << FAST_BITS];$/;"	m	struct:__anon5
 fast_ac	stb_image.h	/^   stbi__int16 fast_ac[4][1 << FAST_BITS];$/;"	m	struct:__anon6
 ffmax	aabb.h	/^inline float ffmax(float a, float b) { return a > b ? a : b; }$/;"	f
 ffmin	aabb.h	/^inline float ffmin(float a, float b) { return a < b ? a : b; }$/;"	f
+final_scene	main.cpp	/^hitable *final_scene() {$/;"	f
 first	stb_image.h	/^   stbi_uc first;$/;"	m	struct:__anon15
 first_row_filter	stb_image.h	/^static stbi_uc first_row_filter[5] =$/;"	v
 firstcode	stb_image.h	/^   stbi__uint16 firstcode[16];$/;"	m	struct:__anon9
 firstsymbol	stb_image.h	/^   stbi__uint16 firstsymbol[16];$/;"	m	struct:__anon9
 flags	stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
+flip_normals	hitable.h	/^        flip_normals(hitable *p) : ptr(p) {}$/;"	f	class:flip_normals
+flip_normals	hitable.h	/^class flip_normals : public hitable {$/;"	c
 float2fixed	stb_image.h	/^#define float2fixed(/;"	d
 fuzz	material.h	/^        float fuzz;$/;"	m	class:metal
 g	vec3.h	/^    inline float g() const { return e[1]; }$/;"	f	class:vec3
@@ -204,11 +228,19 @@ h	stb_image.h	/^      int h,v;$/;"	m	struct:__anon6::__anon7
 h	stb_image.h	/^   int w,h;$/;"	m	struct:__anon16
 h2	stb_image.h	/^      int x,y,w2,h2;$/;"	m	struct:__anon6::__anon7
 ha	stb_image.h	/^      int hd,ha;$/;"	m	struct:__anon6::__anon7
+hasbox	hitable.h	/^        bool hasbox;$/;"	m	class:rotate_y
 hd	stb_image.h	/^      int hd,ha;$/;"	m	struct:__anon6::__anon7
 hit	aabb.h	/^        bool hit(const ray& r, float tmin, float tmax) const {$/;"	f	class:aabb
+hit	box.h	/^bool box::hit(const ray& r, float t0, float t1, hit_record& rec) const {$/;"	f	class:box
 hit	bvh_node.h	/^bool bvh_node::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:bvh_node
+hit	hitable.h	/^        virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:flip_normals
+hit	hitable.h	/^bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:rotate_y
+hit	hitable.h	/^bool translate::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:translate
 hit	hitable_list.h	/^bool hitable_list::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:hitable_list
+hit	medium.h	/^bool constant_medium::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:constant_medium
 hit	rect.h	/^bool xy_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {$/;"	f	class:xy_rect
+hit	rect.h	/^bool xz_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {$/;"	f	class:xz_rect
+hit	rect.h	/^bool yz_rect::hit(const ray& r, float t0, float t1, hit_record& rec) const {$/;"	f	class:yz_rect
 hit	sphere.h	/^bool moving_sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:moving_sphere
 hit	sphere.h	/^bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:sphere
 hit_record	hitable.h	/^struct hit_record {$/;"	s
@@ -242,7 +274,11 @@ img_x	stb_image.h	/^   stbi__uint32 img_x, img_y;$/;"	m	struct:__anon3
 img_y	stb_image.h	/^   stbi__uint32 img_x, img_y;$/;"	m	struct:__anon3
 io	stb_image.h	/^   stbi_io_callbacks io;$/;"	m	struct:__anon3
 io_user_data	stb_image.h	/^   void *io_user_data;$/;"	m	struct:__anon3
+isotropic	material.h	/^        isotropic(texture *a) : albedo(a) {}$/;"	f	class:isotropic
+isotropic	material.h	/^class isotropic : public material {$/;"	c
 k	rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect
+k	rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
+k	rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
 lambertian	material.h	/^        lambertian(texture *a) : albedo(a) {}$/;"	f	class:lambertian
 lambertian	material.h	/^class lambertian : public material {$/;"	c
 left	bvh_node.h	/^        hitable *left;$/;"	m	class:bvh_node
@@ -255,6 +291,7 @@ line1	stb_image.h	/^   stbi_uc *line0,*line1;$/;"	m	struct:__anon8
 line_size	stb_image.h	/^   int line_size;$/;"	m	struct:__anon16
 linebuf	stb_image.h	/^      stbi_uc *linebuf;$/;"	m	struct:__anon6::__anon7
 list	hitable_list.h	/^        hitable **list;$/;"	m	class:hitable_list
+list_ptr	box.h	/^        hitable *list_ptr;$/;"	m	class:box
 list_size	hitable_list.h	/^        int list_size;$/;"	m	class:hitable_list
 load_jpeg_image	stb_image.h	/^static stbi_uc *load_jpeg_image(stbi__jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)$/;"	f
 lower_left_corner	camera.h	/^        vec3 lower_left_corner;$/;"	m	class:camera
@@ -279,6 +316,8 @@ moving_sphere	sphere.h	/^        moving_sphere() {}$/;"	f	class:moving_sphere
 moving_sphere	sphere.h	/^        moving_sphere(vec3 cen0, vec3 cen1, float t0, float t1, float r, material *m)$/;"	f	class:moving_sphere
 moving_sphere	sphere.h	/^class moving_sphere: public hitable {$/;"	c
 mp	rect.h	/^        material *mp;$/;"	m	class:xy_rect
+mp	rect.h	/^        material *mp;$/;"	m	class:xz_rect
+mp	rect.h	/^        material *mp;$/;"	m	class:yz_rect
 noise	perlin.h	/^        float noise(const vec3& p) const {$/;"	f	class:perlin
 noise	texture.h	/^        perlin noise;$/;"	m	class:noise_texture
 noise_texture	texture.h	/^        noise_texture() {}$/;"	f	class:noise_texture
@@ -290,6 +329,7 @@ num_bits	stb_image.h	/^   int num_bits;$/;"	m	struct:__anon10
 nx	texture.h	/^        int nx, ny;$/;"	m	class:image_texture
 ny	texture.h	/^        int nx, ny;$/;"	m	class:image_texture
 odd	texture.h	/^        texture *odd;$/;"	m	class:checker_texture
+offset	hitable.h	/^        vec3 offset;$/;"	m	class:translate
 operator *	vec3.h	/^inline vec3 operator*(const vec3 &v, float t) {$/;"	f
 operator *	vec3.h	/^inline vec3 operator*(const vec3 &v1, const vec3 &v2) {$/;"	f
 operator *	vec3.h	/^inline vec3 operator*(float t, const vec3 &v) {$/;"	f
@@ -328,9 +368,15 @@ perm_y	perlin.h	/^int *perlin::perm_y = perlin_generate_perm();$/;"	m	class:perl
 perm_z	perlin.h	/^        static int *perm_z;$/;"	m	class:perlin
 perm_z	perlin.h	/^int *perlin::perm_z = perlin_generate_perm();$/;"	m	class:perlin
 permute	perlin.h	/^void permute(int *p, int n) {$/;"	f
+phase_function	medium.h	/^        material *phase_function;$/;"	m	class:constant_medium
+pmax	box.h	/^        vec3 pmin, pmax;$/;"	m	class:box
+pmin	box.h	/^        vec3 pmin, pmax;$/;"	m	class:box
 point_at_parameter	ray.h	/^        vec3 point_at_parameter(float t) const { return A + t * B; }$/;"	f	class:ray
 prefix	stb_image.h	/^   stbi__int16 prefix;$/;"	m	struct:__anon15
 progressive	stb_image.h	/^   int            progressive;$/;"	m	struct:__anon6
+ptr	hitable.h	/^        hitable *ptr;$/;"	m	class:flip_normals
+ptr	hitable.h	/^        hitable *ptr;$/;"	m	class:rotate_y
+ptr	hitable.h	/^        hitable *ptr;$/;"	m	class:translate
 r	vec3.h	/^    inline float r() const { return e[0]; }$/;"	f	class:vec3
 radius	sphere.h	/^        float radius;$/;"	m	class:moving_sphere
 radius	sphere.h	/^        float radius;$/;"	m	class:sphere
@@ -356,6 +402,8 @@ resample_row_func	stb_image.h	/^typedef stbi_uc *(*resample_row_func)(stbi_uc *o
 resample_row_hv_2_kernel	stb_image.h	/^   stbi_uc *(*resample_row_hv_2_kernel)(stbi_uc *out, stbi_uc *in_near, stbi_uc *in_far, int w, int hs);$/;"	m	struct:__anon6
 restart_interval	stb_image.h	/^   int restart_interval, todo;$/;"	m	struct:__anon6
 right	bvh_node.h	/^        hitable *right;$/;"	m	class:bvh_node
+rotate_y	hitable.h	/^class rotate_y : public hitable {$/;"	c
+rotate_y	hitable.h	/^rotate_y::rotate_y(hitable *p, float angle) : ptr(p) {$/;"	f	class:rotate_y
 s	stb_image.h	/^   stbi__context *s;$/;"	m	struct:__anon12
 s	stb_image.h	/^   stbi__context *s;$/;"	m	struct:__anon6
 scale	texture.h	/^        float scale;$/;"	m	class:noise_texture
@@ -364,8 +412,10 @@ scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_rec
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:lambertian
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const {$/;"	f	class:metal
 scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation,$/;"	f	class:diffuse_light
+scatter	material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec,$/;"	f	class:isotropic
 schlick	material.h	/^float schlick(float cosine, float ref_idx) {$/;"	f
 simple_light	main.cpp	/^hitable *simple_light() {$/;"	f
+sin_theta	hitable.h	/^        float sin_theta;$/;"	m	class:rotate_y
 size	stb_image.h	/^   stbi_uc  size[257];$/;"	m	struct:__anon5
 size	stb_image.h	/^   stbi_uc  size[288];$/;"	m	struct:__anon9
 size	stb_image.h	/^   stbi_uc size,type,channel;$/;"	m	struct:__anon14
@@ -621,6 +671,8 @@ time1	camera.h	/^        float time0, time1; \/\/ shutter open\/close time$/;"	m
 time1	sphere.h	/^        float time0, time1;$/;"	m	class:moving_sphere
 todo	stb_image.h	/^   int restart_interval, todo;$/;"	m	struct:__anon6
 tq	stb_image.h	/^      int tq;$/;"	m	struct:__anon6::__anon7
+translate	hitable.h	/^        translate(hitable *p, const vec3& displacement) : ptr(p), offset(displacement) {}$/;"	f	class:translate
+translate	hitable.h	/^class translate : public hitable {$/;"	c
 transparent	stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
 turb	perlin.h	/^        float turb(const vec3& p, int depth=7) const {$/;"	f	class:perlin
 two_perlin_spheres	main.cpp	/^hitable *two_perlin_spheres() {$/;"	f
@@ -651,17 +703,31 @@ w_lores	stb_image.h	/^   int w_lores; \/\/ horizontal pixels pre-expansion$/;"	m
 x	stb_image.h	/^      int x,y,w2,h2;$/;"	m	struct:__anon6::__anon7
 x	vec3.h	/^    inline float x() const { return e[0]; }$/;"	f	class:vec3
 x0	rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect
+x0	rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
 x1	rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect
+x1	rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
 xy_rect	rect.h	/^        xy_rect() {}$/;"	f	class:xy_rect
 xy_rect	rect.h	/^        xy_rect(float _x0, float _x1, float _y0, float _y1, float _k, material *mat) :$/;"	f	class:xy_rect
 xy_rect	rect.h	/^class xy_rect : public hitable {$/;"	c
+xz_rect	rect.h	/^        xz_rect() {}$/;"	f	class:xz_rect
+xz_rect	rect.h	/^        xz_rect(float _x0, float _x1, float _z0, float _z1, float _k, material *mat) :$/;"	f	class:xz_rect
+xz_rect	rect.h	/^class xz_rect: public hitable {$/;"	c
 y	stb_image.h	/^      int x,y,w2,h2;$/;"	m	struct:__anon6::__anon7
 y	vec3.h	/^    inline float y() const { return e[1]; }$/;"	f	class:vec3
 y0	rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect
+y0	rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
 y1	rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect
+y1	rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
 ypos	stb_image.h	/^   int ypos;    \/\/ which pre-expansion row we're on$/;"	m	struct:__anon8
 ystep	stb_image.h	/^   int ystep;   \/\/ how far through vertical expansion we are$/;"	m	struct:__anon8
+yz_rect	rect.h	/^        yz_rect() {}$/;"	f	class:yz_rect
+yz_rect	rect.h	/^        yz_rect(float _y0, float _y1, float _z0, float _z1, float _k, material *mat) :$/;"	f	class:yz_rect
+yz_rect	rect.h	/^class yz_rect: public hitable {$/;"	c
 z	vec3.h	/^    inline float z() const { return e[2]; }$/;"	f	class:vec3
+z0	rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
+z0	rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
+z1	rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
+z1	rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
 z_distance	stb_image.h	/^   stbi__zhuffman z_length, z_distance;$/;"	m	struct:__anon10
 z_expandable	stb_image.h	/^   int   z_expandable;$/;"	m	struct:__anon10
 z_length	stb_image.h	/^   stbi__zhuffman z_length, z_distance;$/;"	m	struct:__anon10

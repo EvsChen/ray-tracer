@@ -22,7 +22,8 @@ class sphere : public hitable {
 };
 
 bool sphere::bounding_box(float t0, float t1, aabb& box) const {
-    box = aabb(center - vec3(radius, radius, radius), center + vec3(radius, radius, radius));
+    box = aabb(center - vec3(radius, radius, radius),
+               center + vec3(radius, radius, radius));
     return true;
 }
 
