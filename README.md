@@ -27,6 +27,11 @@ Available materials include:
 Use bouding volume hierachy(BVH) to achieve faster ray intersection.
 
 ## Sample outputs
+<p align="center">
+<img alt="Collection 1" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/collection1.jpg" height="400">
+<img alt="Cornell Box" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/cornell_box.jpg" height="400">
+<img alt="Collection 2" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/collection2.jpg" height="400">
+</p>
 
 ## Improvements
 The original books mentioned before has provided working code of the system.
