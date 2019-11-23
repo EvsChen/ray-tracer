@@ -5,7 +5,7 @@
 #include "hitable.h"
 #include "texture.h"
 
-vec3 random_in_unit_sphere() {
+inline vec3 random_in_unit_sphere() {
     vec3 p;
     do {
         // drand48 -> [0.0, 1.0)
@@ -15,18 +15,18 @@ vec3 random_in_unit_sphere() {
     return p;
 }
 
-vec3 reflect(const vec3& v, const vec3& n) {
+inline vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v,n) * n;
 }
 
-float schlick(float cosine, float ref_idx) {
+inline float schlick(float cosine, float ref_idx) {
     float r0 = (1 - ref_idx) / (1 + ref_idx);
     r0 *= r0;
     return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
 // Snell's law to find the refracted ray
-bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
+inline bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
     vec3 uv = unit_vector(v);
     float dt = dot(uv, n);
     float discriminant = 1.0 - ni_over_nt*ni_over_nt*(1 - dt*dt);
@@ -108,8 +108,8 @@ class dielectric : public material {
 class diffuse_light : public material {
     public:
         diffuse_light(texture* a) : emit(a) {}
-        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation,
-                             ray& scattered) const {
+        virtual bool scatter(const ray &, const hit_record &, vec3 &,
+                             ray &) const {
             return false;
         }
         virtual vec3 emitted(float u, float v, const vec3& p) const {
@@ -121,7 +121,7 @@ class diffuse_light : public material {
 class isotropic : public material {
     public:
         isotropic(texture *a) : albedo(a) {}
-        virtual bool scatter(const ray& r_in, const hit_record& rec,
+        virtual bool scatter(const ray &, const hit_record& rec,
                              vec3& attenuation,
                              ray& scattered) const {
             scattered = ray(rec.p, random_in_unit_sphere());

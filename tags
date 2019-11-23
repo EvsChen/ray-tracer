@@ -16,7 +16,6 @@ CASE	src/stb_image.h	/^      #define CASE(/;"	d
 CASE	src/stb_image.h	/^      #undef CASE$/;"	d
 COMBO	src/stb_image.h	/^      #define COMBO(/;"	d
 FAST_BITS	src/stb_image.h	/^#define FAST_BITS /;"	d
-HITABLEH	src/hitable.h	/^#define HITABLEH$/;"	d
 HITABLELISTH	src/hitable_list.h	/^#define HITABLELISTH$/;"	d
 MATERIALH	src/material.h	/^#define MATERIALH$/;"	d
 MEDIUMH	src/medium.h	/^#define MEDIUMH$/;"	d
@@ -72,7 +71,9 @@ STBI_grey	src/stb_image.h	/^   STBI_grey       = 1,$/;"	e	enum:__anon1
 STBI_grey_alpha	src/stb_image.h	/^   STBI_grey_alpha = 2,$/;"	e	enum:__anon1
 STBI_rgb	src/stb_image.h	/^   STBI_rgb        = 3,$/;"	e	enum:__anon1
 STBI_rgb_alpha	src/stb_image.h	/^   STBI_rgb_alpha  = 4$/;"	e	enum:__anon1
-STB_IMAGE_IMPLEMENTATION	src/main.cpp	/^#define STB_IMAGE_IMPLEMENTATION$/;"	d	file:
+STB_IMAGE_IMPLEMENTATION	src/scene.h	/^#define STB_IMAGE_IMPLEMENTATION$/;"	d
+Scene	src/scene.cpp	/^Scene::Scene() {$/;"	f	class:Scene
+Scene	src/scene.h	/^class Scene {$/;"	c
 TEXTUREH	src/texture.h	/^#define TEXTUREH$/;"	d
 VEC3H	src/vec3.h	/^#define VEC3H$/;"	d
 YCbCr_to_RGB_kernel	src/stb_image.h	/^   void (*YCbCr_to_RGB_kernel)(stbi_uc *out, const stbi_uc *y, const stbi_uc *pcb, const stbi_uc *pcr, int count, int step);$/;"	m	struct:__anon6
@@ -90,7 +91,7 @@ bbox	src/hitable.h	/^        aabb bbox;$/;"	m	class:rotate_y
 bgindex	src/stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
 boundary	src/medium.h	/^        hitable *boundary;$/;"	m	class:constant_medium
 bounding_box	src/box.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:box
-bounding_box	src/bvh_node.h	/^bool bvh_node::bounding_box(float t0, float t1, aabb& b) const {$/;"	f	class:bvh_node
+bounding_box	src/bvh_node.h	/^bool bvh_node::bounding_box(float, float, aabb& b) const {$/;"	f	class:bvh_node
 bounding_box	src/hitable.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:flip_normals
 bounding_box	src/hitable.h	/^        virtual bool bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:rotate_y
 bounding_box	src/hitable.h	/^bool translate::bounding_box(float t0, float t1, aabb& box) const {$/;"	f	class:translate
@@ -139,8 +140,8 @@ constant_medium	src/medium.h	/^class constant_medium : public hitable {$/;"	c
 constant_texture	src/texture.h	/^        constant_texture() {}$/;"	f	class:constant_texture
 constant_texture	src/texture.h	/^        constant_texture(vec3 c) : color(c) {}$/;"	f	class:constant_texture
 constant_texture	src/texture.h	/^class constant_texture : public texture {$/;"	c
-cornell_box	src/main.cpp	/^hitable *cornell_box() {$/;"	f
-cornell_smoke	src/main.cpp	/^hitable *cornell_smoke() {$/;"	f
+cornell_box	src/scene.cpp	/^hitable *cornell_box() {$/;"	f
+cornell_smoke	src/scene.cpp	/^hitable *cornell_smoke() {$/;"	f
 cos_theta	src/hitable.h	/^        float cos_theta;$/;"	m	class:rotate_y
 cross	src/vec3.h	/^inline vec3 cross(const vec3 &v1, const vec3 &v2) {$/;"	f
 cur_x	src/stb_image.h	/^   int cur_x, cur_y;$/;"	m	struct:__anon16
@@ -197,7 +198,7 @@ diffuse_light	src/material.h	/^class diffuse_light : public material {$/;"	c
 direction	src/ray.h	/^        vec3 direction() const { return B; }$/;"	f	class:ray
 dot	src/vec3.h	/^inline float dot(const vec3 &v1, const vec3 &v2) {$/;"	f
 e	src/vec3.h	/^    float e[3];$/;"	m	class:vec3
-earth	src/main.cpp	/^hitable *earth() {$/;"	f
+earth	src/scene.cpp	/^hitable *earth() {$/;"	f
 eflags	src/stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
 emit	src/material.h	/^        texture *emit;$/;"	m	class:diffuse_light
 emitted	src/material.h	/^        virtual vec3 emitted(float u, float v, const vec3& p) const {$/;"	f	class:diffuse_light
@@ -211,7 +212,7 @@ fast	src/stb_image.h	/^   stbi_uc  fast[1 << FAST_BITS];$/;"	m	struct:__anon5
 fast_ac	src/stb_image.h	/^   stbi__int16 fast_ac[4][1 << FAST_BITS];$/;"	m	struct:__anon6
 ffmax	src/aabb.h	/^inline float ffmax(float a, float b) { return a > b ? a : b; }$/;"	f
 ffmin	src/aabb.h	/^inline float ffmin(float a, float b) { return a < b ? a : b; }$/;"	f
-final_scene	src/main.cpp	/^hitable *final_scene() {$/;"	f
+final_scene	src/scene.cpp	/^hitable *final_scene() {$/;"	f
 first	src/stb_image.h	/^   stbi_uc first;$/;"	m	struct:__anon15
 first_row_filter	src/stb_image.h	/^static stbi_uc first_row_filter[5] =$/;"	v
 firstcode	src/stb_image.h	/^   stbi__uint16 firstcode[16];$/;"	m	struct:__anon9
@@ -245,8 +246,8 @@ hit	src/sphere.h	/^bool moving_sphere::hit(const ray& r, float t_min, float t_ma
 hit	src/sphere.h	/^bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {$/;"	f	class:sphere
 hit_record	src/hitable.h	/^struct hit_record {$/;"	s
 hitable	src/hitable.h	/^class hitable {$/;"	c
-hitable_list	src/hitable_list.h	/^        hitable_list() {}$/;"	f	class:hitable_list
-hitable_list	src/hitable_list.h	/^        hitable_list(hitable **l, int n) { list = l; list_size = n; }$/;"	f	class:hitable_list
+hitable_list	src/hitable_list.h	/^    hitable_list() {}$/;"	f	class:hitable_list
+hitable_list	src/hitable_list.h	/^    hitable_list(hitable **l, int n) { list = l; list_size = n; }$/;"	f	class:hitable_list
 hitable_list	src/hitable_list.h	/^class hitable_list: public hitable {$/;"	c
 horizontal	src/camera.h	/^        vec3 horizontal;$/;"	m	class:camera
 hs	src/stb_image.h	/^   int hs,vs;   \/\/ expansion factor in each axis$/;"	m	struct:__anon8
@@ -281,7 +282,7 @@ k	src/rect.h	/^        float x0, x1, z0, z1, k;$/;"	m	class:xz_rect
 k	src/rect.h	/^        float y0, y1, z0, z1, k;$/;"	m	class:yz_rect
 lambertian	src/material.h	/^        lambertian(texture *a) : albedo(a) {}$/;"	f	class:lambertian
 lambertian	src/material.h	/^class lambertian : public material {$/;"	c
-left	src/bvh_node.h	/^        hitable *left;$/;"	m	class:bvh_node
+left	src/bvh_node.h	/^        hitable *left, *right;$/;"	m	class:bvh_node
 length	src/stb_image.h	/^   stbi__uint32 length;$/;"	m	struct:__anon11
 length	src/vec3.h	/^    inline float length() const {$/;"	f	class:vec3
 lens_radius	src/camera.h	/^        float lens_radius;$/;"	m	class:camera
@@ -290,9 +291,9 @@ line0	src/stb_image.h	/^   stbi_uc *line0,*line1;$/;"	m	struct:__anon8
 line1	src/stb_image.h	/^   stbi_uc *line0,*line1;$/;"	m	struct:__anon8
 line_size	src/stb_image.h	/^   int line_size;$/;"	m	struct:__anon16
 linebuf	src/stb_image.h	/^      stbi_uc *linebuf;$/;"	m	struct:__anon6::__anon7
-list	src/hitable_list.h	/^        hitable **list;$/;"	m	class:hitable_list
+list	src/hitable_list.h	/^    hitable **list;$/;"	m	class:hitable_list
 list_ptr	src/box.h	/^        hitable *list_ptr;$/;"	m	class:box
-list_size	src/hitable_list.h	/^        int list_size;$/;"	m	class:hitable_list
+list_size	src/hitable_list.h	/^    int list_size;$/;"	m	class:hitable_list
 load_jpeg_image	src/stb_image.h	/^static stbi_uc *load_jpeg_image(stbi__jpeg *z, int *out_x, int *out_y, int *comp, int req_comp)$/;"	f
 lower_left_corner	src/camera.h	/^        vec3 lower_left_corner;$/;"	m	class:camera
 lpal	src/stb_image.h	/^   stbi_uc lpal[256][4];$/;"	m	struct:__anon16
@@ -312,6 +313,8 @@ metal	src/material.h	/^        metal(const vec3& a) : albedo(a), fuzz(1) {}$/;"	
 metal	src/material.h	/^        metal(const vec3& a, float f) : albedo(a) {$/;"	f	class:metal
 metal	src/material.h	/^class metal : public material {$/;"	c
 min	src/aabb.h	/^        vec3 min() const { return _min; }$/;"	f	class:aabb
+mkS	src/smartpointerhelp.h	/^#define mkS /;"	d
+mkU	src/smartpointerhelp.h	/^#define mkU /;"	d
 moving_sphere	src/sphere.h	/^        moving_sphere() {}$/;"	f	class:moving_sphere
 moving_sphere	src/sphere.h	/^        moving_sphere(vec3 cen0, vec3 cen1, float t0, float t1, float r, material *m)$/;"	f	class:moving_sphere
 moving_sphere	src/sphere.h	/^class moving_sphere: public hitable {$/;"	c
@@ -382,7 +385,7 @@ radius	src/sphere.h	/^        float radius;$/;"	m	class:moving_sphere
 radius	src/sphere.h	/^        float radius;$/;"	m	class:sphere
 random_in_unit_disk	src/camera.h	/^vec3 random_in_unit_disk() {$/;"	f
 random_in_unit_sphere	src/material.h	/^vec3 random_in_unit_sphere() {$/;"	f
-random_scene	src/main.cpp	/^hitable *random_scene() {$/;"	f
+random_scene	src/scene.cpp	/^hitable *random_scene() {$/;"	f
 ranvec	src/perlin.h	/^        static vec3 *ranvec;$/;"	m	class:perlin
 ranvec	src/perlin.h	/^vec3 *perlin::ranvec = perlin_generate();$/;"	m	class:perlin
 ratio	src/stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
@@ -401,7 +404,7 @@ resample_row_1	src/stb_image.h	/^static stbi_uc *resample_row_1(stbi_uc *out, st
 resample_row_func	src/stb_image.h	/^typedef stbi_uc *(*resample_row_func)(stbi_uc *out, stbi_uc *in0, stbi_uc *in1,$/;"	t
 resample_row_hv_2_kernel	src/stb_image.h	/^   stbi_uc *(*resample_row_hv_2_kernel)(stbi_uc *out, stbi_uc *in_near, stbi_uc *in_far, int w, int hs);$/;"	m	struct:__anon6
 restart_interval	src/stb_image.h	/^   int restart_interval, todo;$/;"	m	struct:__anon6
-right	src/bvh_node.h	/^        hitable *right;$/;"	m	class:bvh_node
+right	src/bvh_node.h	/^        hitable *left, *right;$/;"	m	class:bvh_node
 rotate_y	src/hitable.h	/^class rotate_y : public hitable {$/;"	c
 rotate_y	src/hitable.h	/^rotate_y::rotate_y(hitable *p, float angle) : ptr(p) {$/;"	f	class:rotate_y
 s	src/stb_image.h	/^   stbi__context *s;$/;"	m	struct:__anon12
@@ -414,7 +417,7 @@ scatter	src/material.h	/^        virtual bool scatter(const ray& r_in, const hit
 scatter	src/material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation,$/;"	f	class:diffuse_light
 scatter	src/material.h	/^        virtual bool scatter(const ray& r_in, const hit_record& rec,$/;"	f	class:isotropic
 schlick	src/material.h	/^float schlick(float cosine, float ref_idx) {$/;"	f
-simple_light	src/main.cpp	/^hitable *simple_light() {$/;"	f
+simple_light	src/scene.cpp	/^hitable *simple_light() {$/;"	f
 sin_theta	src/hitable.h	/^        float sin_theta;$/;"	m	class:rotate_y
 size	src/stb_image.h	/^   stbi_uc  size[257];$/;"	m	struct:__anon5
 size	src/stb_image.h	/^   stbi_uc  size[288];$/;"	m	struct:__anon9
@@ -675,7 +678,7 @@ translate	src/hitable.h	/^        translate(hitable *p, const vec3& displacement
 translate	src/hitable.h	/^class translate : public hitable {$/;"	c
 transparent	src/stb_image.h	/^   int flags, bgindex, ratio, transparent, eflags;$/;"	m	struct:__anon16
 turb	src/perlin.h	/^        float turb(const vec3& p, int depth=7) const {$/;"	f	class:perlin
-two_perlin_spheres	src/main.cpp	/^hitable *two_perlin_spheres() {$/;"	f
+two_perlin_spheres	src/scene.cpp	/^hitable *two_perlin_spheres() {$/;"	f
 type	src/stb_image.h	/^   stbi__uint32 type;$/;"	m	struct:__anon11
 type	src/stb_image.h	/^   stbi_uc size,type,channel;$/;"	m	struct:__anon14
 u	src/camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
@@ -700,6 +703,7 @@ w	src/camera.h	/^        vec3 u, v, w;$/;"	m	class:camera
 w	src/stb_image.h	/^   int w,h;$/;"	m	struct:__anon16
 w2	src/stb_image.h	/^      int x,y,w2,h2;$/;"	m	struct:__anon6::__anon7
 w_lores	src/stb_image.h	/^   int w_lores; \/\/ horizontal pixels pre-expansion$/;"	m	struct:__anon8
+world	src/scene.h	/^    hitable *world;    $/;"	m	class:Scene
 x	src/stb_image.h	/^      int x,y,w2,h2;$/;"	m	struct:__anon6::__anon7
 x	src/vec3.h	/^    inline float x() const { return e[0]; }$/;"	f	class:vec3
 x0	src/rect.h	/^        float x0, x1, y0, y1, k;$/;"	m	class:xy_rect

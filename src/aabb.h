@@ -36,7 +36,7 @@ class aabb {
         }
 };
 
-aabb surrounding_box(aabb box0, aabb box1) {
+inline aabb surrounding_box(aabb box0, aabb box1) {
     vec3 small(fmin(box0.min().x(), box1.min().x()),
                fmin(box0.min().y(), box1.min().y()),
                fmin(box0.min().z(), box1.min().z()));
