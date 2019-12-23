@@ -63,10 +63,10 @@ hitable *final_scene() {
                                      new constant_texture(vec3(1.0, 1.0, 1.0)));
 
      // Earth
-     int nx, ny, nn;
-     unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
-     material *emat =  new lambertian(new image_texture(tex_data, nx, ny));
-     list[l++] = new sphere(vec3(400,200, 400), 100, emat);
+    //  int nx, ny, nn;
+    //  unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+    //  material *emat =  new lambertian(new image_texture(tex_data, nx, ny));
+    //  list[l++] = new sphere(vec3(400,200, 400), 100, emat);
 
     // Noise
     texture *pertext = new noise_texture(0.1);
@@ -207,5 +207,5 @@ hitable *random_scene() {
 }
 
 Scene::Scene() {
-    world = final_scene();
+    world = cornell_box();
 }

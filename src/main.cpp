@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <chrono>
 #include "float.h"
 #include "camera.h"
 #include "rect.h"
@@ -19,18 +22,16 @@ vec3 color(const ray& r, hitable *world, int depth) {
             return emitted;
         }
     }
-    else {
-        return vec3(0, 0, 0);
-    }
+    return vec3(0, 0, 0);
 }
 
 int main() {
-    // TODO: read the parameters from text file
     int nx = 800;
     int ny = 800;
     // number of samples
-    int ns = 100;
-    std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+    int ns = 10;
+    std::cout << "Image size: " << nx << "x" << ny << std::endl;
+    std::cout << "Samples per pixel: " << ns << std::endl;
     uPtr<Scene> scene = mkU<Scene>();
     vec3 lookfrom(278, 278, -800);
     vec3 lookat(278, 278, 0);
@@ -40,6 +41,8 @@ int main() {
     camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov,
                float(nx)/float(ny), aperture, dist_to_focus,
                0.0, 1.0);
+    int res[nx * ny * 3];
+    auto start = std::chrono::steady_clock::now();
     for (int j = ny - 1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
             vec3 col(0, 0, 0);
@@ -52,10 +55,25 @@ int main() {
             col /= float(ns);
             // gamma 2
             col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
-            int ir = int(255.99*col[0]);
-            int ig = int(255.99*col[1]);
-            int ib = int(255.99*col[2]);
-            std::cout << ir << " " << ig << " " << ib << "\n";
+            int key = 3 * ((ny - 1 - j) * nx + i);
+            res[key] = int(255.99 * col[0]);
+            res[key + 1] = int(255.99 * col[1]);
+            res[key + 2] = int(255.99 * col[2]);
         }
+    }
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    std::cout << "Render time: " << diff.count() << "s\n";
+    std::cout << "Speed: " << std::setprecision(3) << nx * ny * ns / diff.count() << " rays per second" << std::endl; 
+    std::ofstream outFile;
+    outFile.open("img.ppm");
+    if (outFile.is_open()) {
+      outFile << "P3\n" << nx << " " << ny << "\n255\n";
+      for (int i = 0; i < nx * ny * 3; i += 3) {
+        outFile << res[i] << " " << res[i + 1] << " " << res[i + 2] << std::endl;
+      }
+      outFile.close();
+    } else {
+      std::cout << "Open file failed" << std::endl;
     }
 }
