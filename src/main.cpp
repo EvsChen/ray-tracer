@@ -2,6 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <thread>
+
 #include "float.h"
 #include "camera.h"
 #include "rect.h"
@@ -15,7 +17,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
         ray scattered;
         vec3 attenuation;
         vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
-        if (depth < 50 && rec.mat_ptr -> scatter(r, rec, attenuation, scattered)) {
+        if (depth < 10 && rec.mat_ptr -> scatter(r, rec, attenuation, scattered)) {
             return emitted + attenuation * color(scattered, world, depth + 1);
         }
         else {
@@ -29,9 +31,11 @@ int main() {
     int nx = 800;
     int ny = 800;
     // number of samples
-    int ns = 10;
+    int ns = 20;
+    int tileSize = 16;
     std::cout << "Image size: " << nx << "x" << ny << std::endl;
     std::cout << "Samples per pixel: " << ns << std::endl;
+    std::cout << "Tile size: " << tileSize << std::endl;
     uPtr<Scene> scene = mkU<Scene>();
     vec3 lookfrom(278, 278, -800);
     vec3 lookat(278, 278, 0);
@@ -43,24 +47,39 @@ int main() {
                0.0, 1.0);
     int res[nx * ny * 3];
     auto start = std::chrono::steady_clock::now();
-    for (int j = ny - 1; j >= 0; j--) {
-        for (int i = 0; i < nx; i++) {
-            vec3 col(0, 0, 0);
-            for (int s = 0; s < ns; s++) {
-                float u = float(i + drand48()) / float(nx);
-                float v = float(j + drand48()) / float(ny);
-                ray r = cam.get_ray(u, v);
-                col += color(r, scene->world, 0);
-            }
-            col /= float(ns);
-            // gamma 2
-            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
-            int key = 3 * ((ny - 1 - j) * nx + i);
-            res[key] = int(255.99 * col[0]);
-            res[key + 1] = int(255.99 * col[1]);
-            res[key + 2] = int(255.99 * col[2]);
+    std::vector<std::thread> workers;
+    int yNumTiles = (ny + tileSize - 1) / tileSize;
+    int xNumTiles = (nx + tileSize - 1) / tileSize;
+    
+    for (int j = 0; j < yNumTiles; j++) {
+        for (int i = 0; i < xNumTiles; i++) {
+            workers.push_back(std::thread([&](int tileX, int tileY) {
+              for (int x = tileX * tileSize; x < std::min((tileX + 1) * tileSize, nx); x++) {
+                for (int y = tileY * tileSize; y < std::min((tileY + 1) * tileSize, ny); y++) {
+                  vec3 col(0, 0, 0);
+                  for (int s = 0; s < ns; s++) {
+                      float u = float(x + drand48()) / float(nx);
+                      float v = float(y + drand48()) / float(ny);
+                      ray r = cam.get_ray(u, v);
+                      col += color(r, scene->world, 0);
+                  }
+                  col /= float(ns);
+                  // gamma 2
+                  col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
+                  int key = 3 * ((ny - 1 - y) * nx + x);
+                  res[key] = int(255.99 * col[0]);
+                  res[key + 1] = int(255.99 * col[1]);
+                  res[key + 2] = int(255.99 * col[2]);
+                }
+              }
+            }, i, j));
         }
     }
+
+    for (auto &worker : workers) {
+      worker.join();
+    }
+
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> diff = end - start;
     std::cout << "Render time: " << diff.count() << "s\n";
