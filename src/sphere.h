@@ -20,6 +20,7 @@ class sphere : public hitable {
         float radius;
         material* mat_ptr;
 };
+
 class moving_sphere: public hitable {
     public:
         moving_sphere() {}
