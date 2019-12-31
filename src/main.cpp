@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+
 #include "float.h"
 #include "camera.h"
 #include "rect.h"
@@ -16,11 +17,9 @@ vec3 color(const ray& r, hitable *world, int depth) {
         vec3 attenuation;
         vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
         if (depth < 50 && rec.mat_ptr -> scatter(r, rec, attenuation, scattered)) {
-            return emitted + attenuation * color(scattered, world, depth + 1);
+            emitted += attenuation * color(scattered, world, depth + 1);
         }
-        else {
-            return emitted;
-        }
+        return clamp(emitted, 0.f, 1.f);
     }
     return vec3(0, 0, 0);
 }
@@ -29,18 +28,20 @@ int main() {
     int nx = 800;
     int ny = 800;
     // number of samples
-    int ns = 10;
+    int ns = 100;
     std::cout << "Image size: " << nx << "x" << ny << std::endl;
     std::cout << "Samples per pixel: " << ns << std::endl;
     uPtr<Scene> scene = mkU<Scene>();
+    // vec3 lookfrom(0, 0, 10);
+    // vec3 lookat(0, 0, -1);
     vec3 lookfrom(278, 278, -800);
     vec3 lookat(278, 278, 0);
-    float dist_to_focus = 10.0;
+    float dist_to_focus = (lookat - lookfrom).length();
     float aperture = 0.0;
     float vfov = 40.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov,
                float(nx)/float(ny), aperture, dist_to_focus,
-               0.0, 1.0);
+               0.0, 0.0);
     int res[nx * ny * 3];
     auto start = std::chrono::steady_clock::now();
     for (int j = ny - 1; j >= 0; j--) {

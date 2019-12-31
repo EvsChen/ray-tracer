@@ -127,7 +127,7 @@ hitable *cornell_box() {
     material *light = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
     list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
     list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
-    list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
+    list[i++] = new xz_rect(163, 393, 177, 382, 554, light);
     list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
     list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
     list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
@@ -204,6 +204,18 @@ hitable *random_scene() {
     list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
     list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(vec3(0.7, 0.6, 0.5), 0.0));
     return new hitable_list(list, i);
+}
+
+hitable *test_scene() {
+  hitable **list = new hitable*[6];
+  material *dielec = new dielectric(1.5);
+  list[0] = new sphere(vec3(0,0,-1), 0.5, new lambertian(new constant_texture(vec3(0.1, 0.2, 0.5))));
+  list[1] = new sphere(vec3(0,-100.5,-1), 100, new lambertian(new constant_texture(vec3(0.8, 0.8, 0.0))));
+  list[2] = new sphere(vec3(1,0,-1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.3));
+  list[3] = new sphere(vec3(-1,0,-1), 0.5, dielec);
+  list[4] = new sphere(vec3(-1,0,-1), -0.45, dielec);
+  list[5] = new xz_rect(-3, 3, -3, 3, 3, new diffuse_light(new constant_texture(vec3(4, 4, 4))));
+  return new hitable_list(list, 6);
 }
 
 Scene::Scene() {

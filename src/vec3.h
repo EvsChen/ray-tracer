@@ -4,6 +4,13 @@
 #include <stdlib.h>
 #include <iostream>
 
+template<class T>
+constexpr const T& clamp( const T& v, const T& lo, const T& hi )
+{
+    assert( !(hi < lo) );
+    return (v < lo) ? lo : (hi < v) ? hi : v;
+}
+
 class vec3  {
 public:
     vec3() {}
@@ -135,4 +142,13 @@ inline vec3& vec3::operator/=(const float t) {
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
+
+inline vec3 clamp(const vec3 &v, float low, float high) {
+    vec3 clamped;
+    for (int i = 0; i < 3; i++) {
+      clamped[i] = clamp(v[i], low, high);
+    }
+    return clamped;
+}
+
 #endif
