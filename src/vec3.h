@@ -1,6 +1,5 @@
 #ifndef VEC3H
 #define VEC3H
-#include <stdlib.h>
 
 #include <array>
 #include <cmath>
@@ -10,6 +9,10 @@ template <class T>
 constexpr const T &clamp(const T &v, const T &lo, const T &hi) {
   assert(!(hi < lo));
   return (v < lo) ? lo : (hi < v) ? hi : v;
+}
+
+inline float random_float() {
+  return (float)rand() / RAND_MAX;
 }
 
 class vec3 {
@@ -144,6 +147,16 @@ inline vec3 &vec3::operator/=(const float t) {
 
 inline vec3 unit_vector(vec3 v) { return v / v.length(); }
 
+inline vec3 random_cosine_direction() {
+  float r1 = random_float();
+  float r2 = random_float();
+  float z = sqrt(1 - r2);
+  float phi = 2 * M_PI * r1;
+  float x = cos(phi) * sqrt(r2);
+  float y = sin(phi) * sqrt(r2);
+  return vec3(x, y, z);
+}
+
 inline vec3 clamp(const vec3 &v, float low, float high) {
   vec3 clamped;
   for (int i = 0; i < 3; i++) {
@@ -151,5 +164,25 @@ inline vec3 clamp(const vec3 &v, float low, float high) {
   }
   return clamped;
 }
+
+class onb {
+ public:
+  onb() {}
+  vec3& operator[](int i) { return axis[i]; }
+  vec3 operator[](int i) const { return axis[i]; }
+  vec3 u() const { return axis[0]; }
+  vec3 v() const { return axis[1]; }
+  vec3 w() const { return axis[2]; }
+  vec3 local(const vec3 &a) const {
+    return a[0] * u() + a[1] * v() + a[2] * w();
+  }
+  void build_from_w(const vec3 &n) {
+    axis[2] = unit_vector(n);
+    vec3 a = fabs(axis[2][0]) > 0.9 ? vec3(0, 1, 0) : vec3(1, 0, 0);
+    axis[1] = unit_vector(cross(w(), a));
+    axis[0] = cross(w(), v());
+  }
+  std::array<vec3, 3> axis;
+};
 
 #endif
