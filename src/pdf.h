@@ -1,16 +1,18 @@
 #pragma once
-#include "vec3.h"
+#include "geometry.h"
 #include "hitable.h"
 
 class pdf {
  public:
   virtual float value(const vec3& direction) const = 0;
   virtual vec3 generate() const = 0;
+  virtual ~pdf() {}
 };
 
 class cosine_pdf : public pdf {
  public:
   cosine_pdf(const vec3& w) { uvw.build_from_w(w); }
+  ~cosine_pdf() {}
   virtual float value(const vec3& direction) const {
     float cosine = dot(unit_vector(direction), uvw.w());
     return std::max(0.f, cosine);

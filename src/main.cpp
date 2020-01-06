@@ -6,13 +6,14 @@
 #include <vector>
 
 #include "camera.h"
+#include "core/parallel.h"
 #include "float.h"
 #include "pdf.h"
 #include "rect.h"
 #include "scene.h"
 #include "smartpointerhelp.h"
 
-vec3 color(const ray &r, hitable *world, int depth) {
+vec3 color(const ray &r, hitable *world, const hitable &light, int depth) {
   hit_record hrec;
   // 0.001 for avoiding t close to 0
   if (world->hit(r, 0.001, FLT_MAX, hrec)) {
@@ -21,24 +22,14 @@ vec3 color(const ray &r, hitable *world, int depth) {
     if (depth < 5 && hrec.mat_ptr->scatter(r, hrec, &srec)) {
       // For specular, we don't care about the pdf distribution
       if (srec.is_specular) {
-        return srec.attenuation * color(srec.specular_ray, world, depth + 1);
+        return srec.attenuation * color(srec.specular_ray, world, light, depth + 1);
       }
       // Calculate scatter ray
-      hitable *light_shape = new xz_rect(163, 393, 177, 382, 554, nullptr);
-      hitable *glass_sphere = new sphere(vec3(190, 90, 190), 90, nullptr);
-
-      // hitable_pdf pLight(light_shape, hrec.p);
-      // hitable_pdf pSphere(glass_sphere, hrec.p);
-      // mixture_pdf p(&pLight, srec.pdf_ptr);
-      hitable *a[2];
-      a[0] = light_shape;
-      a[1] = glass_sphere;
-      hitable_list hlist(a, 2);
-      vec3 v = hlist.random(hrec.p);
+      vec3 v = light.random(hrec.p);
       ray scattered = ray(hrec.p, v, r.time());
-      float incidentPdf = hlist.pdf_value(hrec.p, scattered.direction());
+      float incidentPdf = light.pdf_value(hrec.p, scattered.direction());
       float scatterPdf = hrec.mat_ptr->scattering_pdf(r, hrec, scattered);
-      emitted += srec.attenuation * color(scattered, world, depth + 1) *
+      emitted += srec.attenuation * color(scattered, world, light, depth + 1) *
                  scatterPdf / incidentPdf;
     }
     return clamp(emitted, 0.f, 1.f);
@@ -49,11 +40,12 @@ vec3 color(const ray &r, hitable *world, int depth) {
 int main() {
   int nx = 800,  // width
       ny = 800,  // height
-      ns = 100,  // number of samples
+      ns = 1000,  // number of samples
       tileSize = 16;
   std::cout << "Image size: " << nx << "x" << ny << std::endl;
   std::cout << "Samples per pixel: " << ns << std::endl;
   std::cout << "Tile size: " << tileSize << std::endl;
+  raytracer::parallelInit();
   uPtr<Scene> scene = mkU<Scene>();
   // vec3 lookfrom(0, 0, 10);
   // vec3 lookat(0, 0, -1);
@@ -66,13 +58,18 @@ int main() {
              dist_to_focus, 0.0, 0.0);
   int res[nx * ny * 3];
   auto start = std::chrono::steady_clock::now();
-#ifdef MULTI_THREAD
-  std::vector<std::thread> workers;
-#endif
   int yNumTiles = (ny + tileSize - 1) / tileSize;
   int xNumTiles = (nx + tileSize - 1) / tileSize;
+  
+  hitable *light_shape = new xz_rect(163, 393, 177, 382, 554, nullptr);
+  hitable *glass_sphere = new sphere(vec3(190, 90, 190), 90, nullptr);
+  hitable *a[2];
+  a[0] = light_shape;
+  a[1] = glass_sphere;
+  hitable_list hlist(a, 2);
 
-  auto renderTile = [&](int tileX, int tileY) {
+  auto renderTile = [&](const Point2i &count) {
+    int tileX = count.x, tileY = count.y;
     for (int x = tileX * tileSize; x < std::min((tileX + 1) * tileSize, nx);
          x++) {
       for (int y = tileY * tileSize; y < std::min((tileY + 1) * tileSize, ny);
@@ -82,7 +79,9 @@ int main() {
           float u = float(x + (float)rand() / RAND_MAX) / nx;
           float v = float(y + (float)rand() / RAND_MAX) / ny;
           ray r = cam.get_ray(u, v);
-          col += color(r, scene->world, 0);
+          vec3 c = color(r, scene->world, hlist, 0); 
+          de_nan(c);
+          col += c;
         }
         col /= float(ns);
         // gamma 2
@@ -95,21 +94,13 @@ int main() {
     }
   };
 
-  for (int j = 0; j < yNumTiles; j++) {
-    for (int i = 0; i < xNumTiles; i++) {
-#ifdef MULTI_THREAD
-      workers.push_back(renderTile, i, j));
-#else
-      renderTile(i, j);
-#endif
-    }
-  }
-
-#ifdef MULTI_THREAD
-  for (auto &worker : workers) {
-    worker.join();
-  }
-#endif
+  raytracer::ParallelFor2d(renderTile, Point2i(xNumTiles, yNumTiles));
+  // for (int i = 0; i < xNumTiles; ++i) {
+  //   for (int j = 0; j < yNumTiles; ++j) {
+  //     renderTile(Point2i(i, j));
+  //   }
+  // }
+  raytracer::parallelClean();
 
   auto end = std::chrono::steady_clock::now();
   std::chrono::duration<double> diff = end - start;
@@ -127,4 +118,5 @@ int main() {
   } else {
     std::cout << "Open file failed" << std::endl;
   }
+  return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "hitable.h"
 
 class bvh_node : public hitable {

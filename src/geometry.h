@@ -15,6 +15,35 @@ inline float random_float() {
   return (float)rand() / RAND_MAX;
 }
 
+
+template <class T>
+class Point2 {
+public:
+  Point2() {}
+  Point2(const Point2<T> &p) : x(p.x), y(p.y) {}
+  Point2(T x, T y) : x(x), y(y) {}
+  T &operator[](int i) {
+    return i == 0 ? x : y;
+  }
+  T operator[](int i) const {
+    return i == 0 ? x : y;
+  }
+  T &operator+=(const Point2<T> &p) {
+    x += p.x;
+    y += p.y;
+  }
+  T &operator-=(const Point2<T> &p) {
+    x -= p.x;
+    y -= p.y;
+  }
+  ~Point2() {}
+  T x, y;
+};
+
+using Point2i = Point2<int>;
+using Point2f = Point2<float>;
+using Point2d = Point2<double>; 
+
 class vec3 {
  public:
   vec3() {}
@@ -163,6 +192,12 @@ inline vec3 clamp(const vec3 &v, float low, float high) {
     clamped[i] = clamp(v[i], low, high);
   }
   return clamped;
+}
+
+inline void de_nan(vec3 &v) {
+  for (int i = 0; i < 3; i++) {
+    if (isnan(v[i])) v[i] = 0.f;
+  }
 }
 
 class onb {

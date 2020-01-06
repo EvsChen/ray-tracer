@@ -5,6 +5,7 @@
 #include "pdf.h"
 #include "ray.h"
 #include "texture.h"
+#include "smartpointerhelp.h"
 
 inline vec3 random_in_unit_sphere() {
   vec3 p;
@@ -41,7 +42,7 @@ struct scatter_record {
   ray specular_ray;
   bool is_specular;
   vec3 attenuation;
-  pdf *pdf_ptr;
+  uPtr<pdf> pdf_ptr;
 };
 
 class material {
@@ -71,7 +72,7 @@ class lambertian : public material {
                        scatter_record *srec) const {
     srec->is_specular = false;
     srec->attenuation = albedo->value(hrec.u, hrec.v, hrec.p);
-    srec->pdf_ptr = new cosine_pdf(hrec.normal);
+    srec->pdf_ptr = mkU<cosine_pdf>(hrec.normal);
     return true;
   }
 

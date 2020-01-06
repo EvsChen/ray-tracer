@@ -1,7 +1,7 @@
 #ifndef PERLINH
 #define PERLINH
 
-#include "vec3.h"
+#include "geometry.h"
 
 inline float perline_interp(vec3 c[2][2][2], float u, float v, float w) {
     float uu = u * u * (3 - 2 * u);
