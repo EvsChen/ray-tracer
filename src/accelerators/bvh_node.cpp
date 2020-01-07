@@ -1,4 +1,4 @@
-#include "bvh_node.h"
+#include "accelerators/bvh_node.h"
 
 bool bvh_node::bounding_box(float, float, aabb& b) const {
     b = box;

@@ -13,7 +13,7 @@
 #include "scene.h"
 #include "smartpointerhelp.h"
 
-vec3 color(const ray &r, hitable *world, const hitable &light, int depth) {
+vec3 color(const ray &r, hitable *world, hitable *light, int depth) {
   hit_record hrec;
   // 0.001 for avoiding t close to 0
   if (world->hit(r, 0.001, FLT_MAX, hrec)) {
@@ -25,28 +25,28 @@ vec3 color(const ray &r, hitable *world, const hitable &light, int depth) {
         return srec.attenuation * color(srec.specular_ray, world, light, depth + 1);
       }
       // Calculate scatter ray
-      vec3 v = light.random(hrec.p);
+      vec3 v = light->random(hrec.p);
       ray scattered = ray(hrec.p, v, r.time());
-      float incidentPdf = light.pdf_value(hrec.p, scattered.direction());
+      float incidentPdf = light->pdf_value(hrec.p, scattered.direction());
       float scatterPdf = hrec.mat_ptr->scattering_pdf(r, hrec, scattered);
       emitted += srec.attenuation * color(scattered, world, light, depth + 1) *
                  scatterPdf / incidentPdf;
     }
     return clamp(emitted, 0.f, 1.f);
   }
-  return vec3(0.f, 0.f, 0.f);
+  return vec3(0.f);
 }
 
 int main() {
   int nx = 800,  // width
       ny = 800,  // height
-      ns = 1000,  // number of samples
+      ns = 100,  // number of samples
       tileSize = 16;
   std::cout << "Image size: " << nx << "x" << ny << std::endl;
   std::cout << "Samples per pixel: " << ns << std::endl;
   std::cout << "Tile size: " << tileSize << std::endl;
   raytracer::parallelInit();
-  uPtr<Scene> scene = mkU<Scene>();
+  Scene scene = Scene();
   // vec3 lookfrom(0, 0, 10);
   // vec3 lookat(0, 0, -1);
   vec3 lookfrom(278, 278, -600), lookat(278, 278, 0);
@@ -61,25 +61,18 @@ int main() {
   int yNumTiles = (ny + tileSize - 1) / tileSize;
   int xNumTiles = (nx + tileSize - 1) / tileSize;
   
-  hitable *light_shape = new xz_rect(163, 393, 177, 382, 554, nullptr);
-  hitable *glass_sphere = new sphere(vec3(190, 90, 190), 90, nullptr);
-  hitable *a[2];
-  a[0] = light_shape;
-  a[1] = glass_sphere;
-  hitable_list hlist(a, 2);
-
   auto renderTile = [&](const Point2i &count) {
     int tileX = count.x, tileY = count.y;
     for (int x = tileX * tileSize; x < std::min((tileX + 1) * tileSize, nx);
          x++) {
       for (int y = tileY * tileSize; y < std::min((tileY + 1) * tileSize, ny);
            y++) {
-        vec3 col(0, 0, 0);
+        vec3 col(0.f);
         for (int s = 0; s < ns; s++) {
           float u = float(x + (float)rand() / RAND_MAX) / nx;
           float v = float(y + (float)rand() / RAND_MAX) / ny;
           ray r = cam.get_ray(u, v);
-          vec3 c = color(r, scene->world, hlist, 0); 
+          vec3 c = color(r, scene.world, scene.light, 0); 
           de_nan(c);
           col += c;
         }
@@ -87,9 +80,9 @@ int main() {
         // gamma 2
         col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
         int key = 3 * ((ny - 1 - y) * nx + x);
-        res[key] = int(255 * col[0]);
-        res[key + 1] = int(255 * col[1]);
-        res[key + 2] = int(255 * col[2]);
+        res[key] = round(255.f * col[0]);
+        res[key + 1] = round(255.f * col[1]);
+        res[key + 2] = round(255.f * col[2]);
       }
     }
   };

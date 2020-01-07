@@ -15,6 +15,7 @@ struct hit_record {
 
 class hitable {
  public:
+  hitable() {}
   virtual bool hit(const ray& r, float t_min, float t_max,
                    hit_record& rec) const = 0;
   virtual float pdf_value(const vec3& origin, const vec3& direction) const {

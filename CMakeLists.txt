@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(${PROJECT_NAME}
   ./src/main.cpp
   ./src/core/parallel.cpp
-  ./src/bvh_node.cpp
+  ./src/accelerators/bvh_node.cpp
   ./src/box.cpp
   ./src/hitable_list.cpp
   ./src/hitable.cpp
