@@ -1,9 +1,11 @@
 #include "scene.h"
 
-#include "smartpointerhelp.h"
+#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#include "smartpointerhelp.h"
 
 void final_scene(Scene *scene) {
   int l = 0;
@@ -11,7 +13,7 @@ void final_scene(Scene *scene) {
   // Ground
   int b = 0;
   int nb = 20;
-  hitable **boxlist = new hitable *[10000];
+  std::vector<hitable*> boxlist(nb * nb);
   material *ground =
       new lambertian(new constant_texture(vec3(0.48, 0.83, 0.53)));
   for (int i = 0; i < nb; i++) {
@@ -23,10 +25,10 @@ void final_scene(Scene *scene) {
       float x1 = x0 + w;
       float y1 = 100 * (drand48() + 0.01);
       float z1 = z0 + w;
-      boxlist[b++] = new box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
+      boxlist[i * nb + j] = new box(vec3(x0, y0, z0), vec3(x1, y1, z1), ground);
     }
   }
-  list[l++] = new bvh_node(boxlist, b, 0, 1);
+  list[l++] = new bvh_node(boxlist, 0, boxlist.size(), 0, 1);
 
   // Top light
   material *light = new diffuse_light(new constant_texture(vec3(7, 7, 7)));
@@ -35,15 +37,15 @@ void final_scene(Scene *scene) {
 
   // Foam Box
   int ns = 1000;
-  hitable **boxlist2 = new hitable *[10000];
+  std::vector<hitable*> boxlist2(ns);
   material *white =
       new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
-  for (int j = 0; j < ns; j++) {
-    boxlist2[j] = new sphere(
+  for (int i = 0; i < ns; i++) {
+    boxlist2[i] = new sphere(
         vec3(165 * drand48(), 165 * drand48(), 165 * drand48()), 10, white);
   }
   list[l++] =
-      new translate(new rotate_y(new bvh_node(boxlist2, ns, 0.0, 1.0), 15),
+      new translate(new rotate_y(new bvh_node(boxlist2, 0, ns, 0.0, 1.0), 15),
                     vec3(-100, 270, 395));
 
   // Moving sphere
