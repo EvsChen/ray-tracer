@@ -4,8 +4,8 @@
 #include "hitable.h"
 #include "pdf.h"
 #include "ray.h"
-#include "texture.h"
 #include "smartpointerhelp.h"
+#include "texture.h"
 
 inline vec3 random_in_unit_sphere() {
   vec3 p;
@@ -50,12 +50,13 @@ class material {
   // TODO: Remove pdf calculation
   virtual bool scatter(const ray &r_in, const hit_record &hrec,
                        scatter_record *srec) const = 0;
-  virtual float scattering_pdf(const ray &r_in, const hit_record &rec,
-                               const ray &scattered) const {
+  virtual float scattering_pdf(const ray &, const hit_record &,
+                               const ray &) const {
     return 0.f;
   }
-  virtual vec3 emitted(float u, float v, const vec3 &p) const {
-    return vec3(0, 0, 0);
+  virtual vec3 emitted(const ray &, const hit_record &, float, float,
+                       const vec3 &) const {
+    return vec3(0.f, 0.f, 0.f);
   }
 };
 
@@ -137,8 +138,13 @@ class diffuse_light : public material {
                        scatter_record *srec) const {
     return false;
   }
-  virtual vec3 emitted(float u, float v, const vec3 &p) const {
+  virtual vec3 emitted(const ray &r_in, const hit_record &hrec, float u,
+                       float v, const vec3 &p) const {
     return emit->value(u, v, p);
+    // if (dot(r_in.direction(), hrec.normal) < 0.f) {
+    //   return emit->value(u, v, p);
+    // }
+    // return vec3(0.f);
   }
   texture *emit;
 };

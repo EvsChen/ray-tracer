@@ -49,6 +49,11 @@ bool box_z_compare(const hitable *a, const hitable *b) {
   return box_left.min().z() < box_right.min().z();
 }
 
+void bvh_node::SAH(std::vector<hitable*> &l, int start, int end) {
+  // Divide all the hitables into 12 buckets
+  int numOfBucket = 12;
+}
+
 bvh_node::bvh_node(std::vector<hitable*> &l, int start, int end, float time0, float time1) {
     // Randomly pick an axis to sort
     int axis = int(3*drand48());
