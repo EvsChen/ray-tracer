@@ -18,7 +18,7 @@ vec3 color(const ray &r, hitable *world, hitable *light, int depth) {
   // 0.001 for avoiding t close to 0
   if (world->hit(r, 0.001, FLT_MAX, hrec)) {
     scatter_record srec;
-    vec3 emitted = hrec.mat_ptr->emitted(hrec.u, hrec.v, hrec.p);
+    vec3 emitted = hrec.mat_ptr->emitted(r, hrec, hrec.u, hrec.v, hrec.p);
     if (depth < 5 && hrec.mat_ptr->scatter(r, hrec, &srec)) {
       // For specular, we don't care about the pdf distribution
       if (srec.is_specular) {
@@ -32,7 +32,7 @@ vec3 color(const ray &r, hitable *world, hitable *light, int depth) {
       emitted += srec.attenuation * color(scattered, world, light, depth + 1) *
                  scatterPdf / incidentPdf;
     }
-    return clamp(emitted, 0.f, 1.f);
+    return emitted;
   }
   return vec3(0.f);
 }
@@ -79,6 +79,7 @@ int main() {
         col /= float(ns);
         // gamma 2
         col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
+        col = clamp(col, 0.f, 1.f);
         int key = 3 * ((ny - 1 - y) * nx + x);
         res[key] = round(255.f * col[0]);
         res[key + 1] = round(255.f * col[1]);
