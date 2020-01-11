@@ -3,9 +3,8 @@
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include "smartpointerhelp.h"
+#include "stb_image.h"
 
 void final_scene(Scene *scene) {
   int l = 0;
@@ -13,7 +12,7 @@ void final_scene(Scene *scene) {
   // Ground
   int b = 0;
   int nb = 20;
-  std::vector<hitable*> boxlist(nb * nb);
+  std::vector<hitable *> boxlist(nb * nb);
   material *ground =
       new lambertian(new constant_texture(vec3(0.48, 0.83, 0.53)));
   for (int i = 0; i < nb; i++) {
@@ -32,12 +31,12 @@ void final_scene(Scene *scene) {
 
   // Top light
   material *light = new diffuse_light(new constant_texture(vec3(7, 7, 7)));
-  scene->light = new xz_rect(123, 423, 147, 412, 554, light); 
+  scene->light = new xz_rect(123, 423, 147, 412, 554, light);
   list[l++] = scene->light;
 
   // Foam Box
   int ns = 1000;
-  std::vector<hitable*> boxlist2(ns);
+  std::vector<hitable *> boxlist2(ns);
   material *white =
       new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
   for (int i = 0; i < ns; i++) {
@@ -120,14 +119,14 @@ void cornell_box(Scene *scene) {
   hitable **list = new hitable *[8];
   int i = 0;
   material *red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
-  material *white =
-      new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+  material *white = new lambertian(new constant_texture(vec3(0.73f)));
   material *green =
       new lambertian(new constant_texture(vec3(0.12, 0.40, 0.15)));
-  material *lightMat = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
+  material *lightMat = new diffuse_light(new constant_texture(vec3(7.f)));
   list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
   list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
-  scene->light = new xz_rect(163, 393, 177, 382, 554, lightMat);
+  scene->light =
+      new flip_normals(new xz_rect(163, 393, 177, 382, 554, lightMat));
   list[i++] = scene->light;
   list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
   list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
@@ -135,11 +134,11 @@ void cornell_box(Scene *scene) {
   list[i++] = new translate(
       new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18),
       vec3(130, 0, 65));
-  material *alum = new metal(vec3(0.8, 0.85, 0.88), 0.0);
+  // material *alum = new metal(vec3(0.8, 0.85, 0.88), 0.0);
   list[i++] = new translate(
-      new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), alum), 15),
+      new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15),
       vec3(265, 0, 295));
-  
+
   scene->world = new hitable_list(list, i);
 }
 
@@ -224,5 +223,5 @@ hitable *random_scene() {
 
 Scene::Scene() : world(), light() {
   // cornell_box(this);
-  final_scene(this);
+  cornell_box(this);
 }
