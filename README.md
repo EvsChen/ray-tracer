@@ -10,7 +10,6 @@ It also serves as a playground for experimenting with other rendering algorithms
 
 ## Features
 ### Materials
-Available materials include:
 * Lambertian
 * Metal
 * Dielectric
@@ -23,18 +22,9 @@ Available materials include:
 * Image texture
 * Noise texture: using perlin noise
 
-### Algorithms
-Use bouding volume hierachy(BVH) to achieve faster ray intersection.
+### Acceleration Structures
+* Bounding Volume Hierachy (BVH)
+* K-D Tree (WIP)
 
-## Sample outputs
-<p align="center">
-<img alt="Collection 1" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/collection1.jpg" height="400">
-<img alt="Cornell Box" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/cornell_box.jpg" height="400">
-<img alt="Collection 2" src="https://raw.githubusercontent.com/EvsChen/first-ray-tracer/master/collection2.jpg" height="400">
-</p>
-
-## Improvements
-The original books mentioned before has provided working code of the system.
-However, I've rewroted all the code, trying to improve its performance as well as readability.
-* Follow google c++ guide
-* Rewrite some of the if-else logic
+### Integrators
+* Monte Carlo Integrators
