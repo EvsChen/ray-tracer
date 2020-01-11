@@ -56,7 +56,7 @@ class material {
   }
   virtual vec3 emitted(const ray &, const hit_record &, float, float,
                        const vec3 &) const {
-    return vec3(0.f, 0.f, 0.f);
+    return vec3(0.f);
   }
 };
 
@@ -140,11 +140,10 @@ class diffuse_light : public material {
   }
   virtual vec3 emitted(const ray &r_in, const hit_record &hrec, float u,
                        float v, const vec3 &p) const {
-    return emit->value(u, v, p);
-    // if (dot(r_in.direction(), hrec.normal) < 0.f) {
-    //   return emit->value(u, v, p);
-    // }
-    // return vec3(0.f);
+    if (dot(r_in.direction(), hrec.normal) < 0.f) {
+      return emit->value(u, v, p);
+    }
+    return vec3(0.f);
   }
   texture *emit;
 };

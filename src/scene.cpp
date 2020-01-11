@@ -125,9 +125,9 @@ void cornell_box(Scene *scene) {
   material *lightMat = new diffuse_light(new constant_texture(vec3(7.f)));
   list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
   list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
-  // scene->light = new flip_normals(new xz_rect(163, 393, 177, 382, 554, lightMat));
-  scene->light = new xz_rect(163, 393, 177, 382, 554, lightMat);
-  list[i++] = scene->light;
+  hitable *light_rect = new xz_rect(163, 393, 177, 382, 554, lightMat);
+  list[i++] = new flip_normals(light_rect);
+  scene->light = light_rect;
   list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
   list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
   list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
