@@ -13,8 +13,8 @@
 #include "scene.h"
 #include "smartpointerhelp.h"
 
-vec3 color(const ray &r, hitable *world, hitable *light, int depth) {
-  hit_record hrec;
+vec3 color(const Ray &r, Hitable *world, Hitable *light, int depth) {
+  HitRecord hrec;
   // 0.001 for avoiding t close to 0
   if (world->hit(r, 0.001, FLT_MAX, hrec)) {
     scatter_record srec;
@@ -26,7 +26,7 @@ vec3 color(const ray &r, hitable *world, hitable *light, int depth) {
       }
       // Calculate scatter ray
       vec3 v = light->random(hrec.p);
-      ray scattered = ray(hrec.p, v, r.time());
+      Ray scattered = Ray(hrec.p, v, r.time());
       float incidentPdf = light->pdf_value(hrec.p, scattered.direction());
       float scatterPdf = hrec.mat_ptr->scattering_pdf(r, hrec, scattered);
       emitted += srec.attenuation * color(scattered, world, light, depth + 1) *
@@ -71,7 +71,7 @@ int main() {
         for (int s = 0; s < ns; s++) {
           float u = float(x + (float)rand() / RAND_MAX) / nx;
           float v = float(y + (float)rand() / RAND_MAX) / ny;
-          ray r = cam.get_ray(u, v);
+          Ray r = cam.get_ray(u, v);
           vec3 c = color(r, scene.world, scene.light, 0); 
           de_nan(c);
           col += c;

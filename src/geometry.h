@@ -194,6 +194,14 @@ inline vec3 clamp(const vec3 &v, float low, float high) {
   return clamped;
 }
 
+inline vec3 Min(const vec3 &a, const vec3 &b) {
+  return vec3(fmin(a[0], b[0]), fmin(a[1], b[1]), fmin(a[2], b[2]));
+}
+
+inline vec3 Max(const vec3 &a, const vec3 &b) {
+  return vec3(fmax(a[0], b[0]), fmax(a[1], b[1]), fmax(a[2], b[2]));
+}
+
 inline void de_nan(vec3 &v) {
   for (int i = 0; i < 3; i++) {
     if (isnan(v[i])) v[i] = 0.f;

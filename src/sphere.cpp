@@ -13,8 +13,8 @@ vec3 random_to_sphere(float radius, float distance_squared) {
 }
 
 float sphere::pdf_value(const vec3& o, const vec3& v) const {
-  hit_record rec;
-  if (hit(ray(o, v), 0.001, FLT_MAX, rec)) {
+  HitRecord rec;
+  if (hit(Ray(o, v), 0.001, FLT_MAX, rec)) {
     float cos_theta_max =
         sqrt(1 - radius * radius / (center - o).squared_length());
     float solid_angle = 2 * M_PI * (1 - cos_theta_max);
@@ -37,8 +37,8 @@ bool sphere::bounding_box(float t0, float t1, aabb& box) const {
   return true;
 }
 
-bool sphere::hit(const ray& r, float t_min, float t_max,
-                 hit_record& rec) const {
+bool sphere::hit(const Ray& r, float t_min, float t_max,
+                 HitRecord& rec) const {
   vec3 oc = r.origin() - center;
   float a = dot(r.direction(), r.direction());
   float b = dot(oc, r.direction());
@@ -82,8 +82,8 @@ bool moving_sphere::bounding_box(float t0, float t1, aabb& box) const {
 }
 
 // replace "center" with "center(r.time())"
-bool moving_sphere::hit(const ray& r, float t_min, float t_max,
-                        hit_record& rec) const {
+bool moving_sphere::hit(const Ray& r, float t_min, float t_max,
+                        HitRecord& rec) const {
   vec3 oc = r.origin() - center(r.time());
   float a = dot(r.direction(), r.direction());
   float b = dot(oc, r.direction());

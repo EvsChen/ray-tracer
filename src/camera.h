@@ -29,11 +29,11 @@ class camera {
             vertical = 2 * focus_dist * half_height * v;
             lower_left_corner = origin - horizontal / 2 - vertical / 2 - focus_dist * w;
         }
-        ray get_ray(float s, float t) {
+        Ray get_ray(float s, float t) {
             vec3 rd = lens_radius * random_in_unit_disk();
             vec3 offset = u * rd.x() + v * rd.y();
             float time = time0 + drand48() * (time1 - time0);
-            return ray(origin + offset,
+            return Ray(origin + offset,
                        lower_left_corner + s*horizontal + t*vertical - origin - offset,
                        time);
         }

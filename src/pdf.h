@@ -25,13 +25,13 @@ class cosine_pdf : public pdf {
 
 class hitable_pdf : public pdf {
  public:
-  hitable_pdf(hitable* p, const vec3& origin) : hit(p), origin(origin) {}
+  hitable_pdf(Hitable* p, const vec3& origin) : hit(p), origin(origin) {}
   virtual float value(const vec3& direction) const {
     return hit->pdf_value(origin, direction);
   }
   virtual vec3 generate() const { return hit->random(origin); }
   vec3 origin;
-  hitable* hit;
+  Hitable* hit;
 };
 
 class mixture_pdf : public pdf {

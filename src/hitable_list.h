@@ -3,14 +3,14 @@
 
 #include "hitable.h"
 
-class hitable_list : public hitable {
+class hitable_list : public Hitable {
  public:
   hitable_list() {}
-  hitable_list(hitable** l, int n) {
+  hitable_list(Hitable** l, int n) {
     list = l;
     list_size = n;
   }
-  virtual bool hit(const ray& r, float tmin, float tmax, hit_record& rec) const;
+  virtual bool hit(const Ray& r, float tmin, float tmax, HitRecord& rec) const;
   virtual bool bounding_box(float t0, float t1, aabb& box) const;
   virtual float pdf_value(const vec3& o, const vec3& v) const {
     float sum = 0.f;
@@ -26,7 +26,7 @@ class hitable_list : public hitable {
   }
 
  private:
-  hitable** list;
+  Hitable** list;
   int list_size;
 };
 #endif

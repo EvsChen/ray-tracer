@@ -7,29 +7,31 @@
 // We do not include material.h here in case of circularity
 class material;
 
-struct hit_record {
+struct HitRecord {
   float t, u, v;
   vec3 p, normal;
   material* mat_ptr;
 };
 
-class hitable {
+class Hitable {
  public:
-  hitable() {}
-  virtual bool hit(const ray& r, float t_min, float t_max,
-                   hit_record& rec) const = 0;
+  Hitable() {}
+  virtual bool hit(const Ray& r, float t_min, float t_max,
+                   HitRecord& rec) const = 0;
   virtual float pdf_value(const vec3& origin, const vec3& direction) const {
     return 0.f;
   }
   virtual vec3 random(const vec3& origin) const { return vec3(1.f, 0.f, 0.f); }
+  // TODO: Remove bouding_box method
+  [[deprecated("Use the new function getBoundingBox instead")]]
   virtual bool bounding_box(float t0, float t1, aabb& box) const = 0;
 };
 
-class flip_normals : public hitable {
+class flip_normals : public Hitable {
  public:
-  flip_normals(hitable* p) : ptr(p) {}
-  virtual bool hit(const ray& r, float t_min, float t_max,
-                   hit_record& rec) const {
+  flip_normals(Hitable* p) : ptr(p) {}
+  virtual bool hit(const Ray& r, float t_min, float t_max,
+                   HitRecord& rec) const {
     if (ptr->hit(r, t_min, t_max, rec)) {
       rec.normal = -rec.normal;
       return true;
@@ -39,30 +41,30 @@ class flip_normals : public hitable {
   virtual bool bounding_box(float t0, float t1, aabb& box) const {
     return ptr->bounding_box(t0, t1, box);
   }
-  hitable* ptr;
+  Hitable* ptr;
 };
 
-class translate : public hitable {
+class translate : public Hitable {
  public:
-  translate(hitable* p, const vec3& displacement)
+  translate(Hitable* p, const vec3& displacement)
       : ptr(p), offset(displacement) {}
-  virtual bool hit(const ray& r, float t_min, float t_max,
-                   hit_record& rec) const;
+  virtual bool hit(const Ray& r, float t_min, float t_max,
+                   HitRecord& rec) const;
   virtual bool bounding_box(float t0, float t1, aabb& box) const;
-  hitable* ptr;
+  Hitable* ptr;
   vec3 offset;
 };
 
-class rotate_y : public hitable {
+class rotate_y : public Hitable {
  public:
-  rotate_y(hitable* p, float angle);
-  virtual bool hit(const ray& r, float t_min, float t_max,
-                   hit_record& rec) const;
+  rotate_y(Hitable* p, float angle);
+  virtual bool hit(const Ray& r, float t_min, float t_max,
+                   HitRecord& rec) const;
   virtual bool bounding_box(float, float, aabb& box) const {
     box = bbox;
     return hasbox;
   }
-  hitable* ptr;
+  Hitable* ptr;
   float sin_theta;
   float cos_theta;
   bool hasbox;

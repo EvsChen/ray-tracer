@@ -1,7 +1,7 @@
 #include "hitable.h"
 
-bool translate::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
-    ray moved_r(r.origin() - offset, r.direction(), r.time());
+bool translate::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
+    Ray moved_r(r.origin() - offset, r.direction(), r.time());
     if (ptr->hit(moved_r, t_min, t_max, rec)) {
         rec.p += offset;
         return true;
@@ -18,7 +18,7 @@ bool translate::bounding_box(float t0, float t1, aabb& box) const {
 }
 
 
-rotate_y::rotate_y(hitable *p, float angle) : ptr(p) {
+rotate_y::rotate_y(Hitable *p, float angle) : ptr(p) {
     float radians = (M_PI / 180.) * angle;
     sin_theta = sin(radians);
     cos_theta = cos(radians);
@@ -45,14 +45,14 @@ rotate_y::rotate_y(hitable *p, float angle) : ptr(p) {
     }
 }
 
-bool rotate_y::hit(const ray& r, float t_min, float t_max, hit_record& rec) const {
+bool rotate_y::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
     vec3 origin = r.origin();
     vec3 direction = r.direction();
     origin[0] = cos_theta * r.origin()[0] - sin_theta * r.origin()[2];
     origin[2] = sin_theta * r.origin()[0] + cos_theta * r.origin()[2];
     direction[0] = cos_theta*r.direction()[0] - sin_theta*r.direction()[2];
     direction[2] = sin_theta*r.direction()[0] + cos_theta*r.direction()[2];
-    ray rotated_r(origin, direction, r.time());
+    Ray rotated_r(origin, direction, r.time());
     if (ptr->hit(rotated_r, t_min, t_max, rec)) {
         vec3 p = rec.p;
         vec3 normal = rec.normal;
