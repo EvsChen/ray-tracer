@@ -15,7 +15,6 @@ inline float random_float() {
   return (float)rand() / RAND_MAX;
 }
 
-
 template <class T>
 class Point2 {
 public:
@@ -46,9 +45,9 @@ using Point2d = Point2<double>;
 
 class vec3 {
  public:
-  vec3() {}
   vec3(float e0, float e1, float e2) : e({e0, e1, e2}) {}
   vec3(float e) : vec3(e, e, e) {}
+  vec3() : vec3(0.f) {}
   float x() const { return e[0]; }
   float y() const { return e[1]; }
   float z() const { return e[2]; }

@@ -117,26 +117,29 @@ void BVH::buildSAH(BVHNode *node, int start, int end) {
     node->right = mkU<BVHNode>(this);
     buildLeaf(node->left.get(), start, end);
     buildLeaf(node->right.get(), start, end);
+    node->box = surrounding_box(node->left->box, node->right->box);
     return;
   }
 
-  aabb totalBox;
+  aabb centerBox, totalBox;
   aabb hitableBounds[end - start];
   // TODO: Reduce the number of passes through the hitables
   // Currently the parent will loop over all the child nodes
   for (int i = start; i < end; i++) {
     hitables[i]->bounding_box(tMin, tMax, hitableBounds[i - start]);
-    totalBox = surrounding_box(totalBox, hitableBounds[i - start].getCentroid());
+    totalBox = surrounding_box(totalBox, hitableBounds[i - start]);
+    centerBox = surrounding_box(centerBox, hitableBounds[i - start].getCentroid());
   }
 
-  int axis = totalBox.getMaxExtentAxis();
-  float axisMax = totalBox.max()[axis], axisMin = totalBox.min()[axis];
-  node->box = totalBox;
+  int axis = centerBox.getMaxExtentAxis();
+  float axisMax = centerBox.max()[axis], axisMin = centerBox.min()[axis];
 
   // When the hitables have the same centroid, we switch to EqualCounts
   if (axisMax == axisMin || n < 4) {
     buildEqualCounts(node, start, end);
+    return;
   }
+
   int numOfBuckets = 12;
   struct BucketInfo {
     aabb bound;
@@ -155,7 +158,7 @@ void BVH::buildSAH(BVHNode *node, int start, int end) {
   float cost[numOfBuckets - 1];
   // TODO: This loop can be optimized to O(N)
   for (size_t i = 1; i < numOfBuckets; i++) {
-    size_t leftCount, rightCount;
+    int leftCount = 0, rightCount = 0;
     aabb leftBound, rightBound;
     for (size_t j = 0; j < i; j++) {
       leftCount += buckets[j].count;
@@ -185,7 +188,7 @@ void BVH::buildSAH(BVHNode *node, int start, int end) {
     return;
   }
   // Split the array
-  float splitBound = axisMin + minBucketSplit / numOfBuckets * (axisMax - axisMin);
+  float splitBound = axisMin + static_cast<float>(minBucketSplit) / numOfBuckets * (axisMax - axisMin);
   auto midItr =
       std::partition(hitables.begin() + start, hitables.begin() + end, [&](const sPtr<Hitable> &h) {
         aabb bound;
@@ -197,6 +200,7 @@ void BVH::buildSAH(BVHNode *node, int start, int end) {
   node->right = mkU<BVHNode>(this);
   buildSAH(node->left.get(), start, mid);
   buildSAH(node->right.get(), mid, end);
+  node->box = surrounding_box(node->right->box, node->left->box);
 }
 
 bool BVH::hit(const Ray &r, float tMin, float tMax, HitRecord &rec) const {
